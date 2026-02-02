@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/FBXAnimationPlayer.Samples/VRM10Viewer/Vrm10Viewer.unity
+    path: Assets/FbxAnimationPlayer.Samples/Vrm10Viewer/Vrm10Viewer.unity
     guid: 223f7c9505106464ea984149a168a999
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

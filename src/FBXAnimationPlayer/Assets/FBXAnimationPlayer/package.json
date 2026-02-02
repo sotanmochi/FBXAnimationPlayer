@@ -1,0 +1,7 @@
+{
+    "name": "jp.sotanmochi.fbxanimationplayer",
+    "version": "0.1.0",
+    "displayName": "FbxAnimationPlayer",
+    "description": "Runtime FBX animation importer and player for Unity",
+    "license": "MIT"
+}
