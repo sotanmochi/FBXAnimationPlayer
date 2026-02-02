@@ -223,6 +223,13 @@
       },
       "hash": "3b99078d26b362733ad9bf463f98c83b8a1b4c9f"
     },
+    "io.github.gkngkc.unity-standalone-file-browser": {
+      "version": "https://github.com/sotanmochi/UnityStandaloneFileBrowser.git?path=Assets/StandaloneFileBrowser#1.2.3",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "6d131cbb9c83dc9d9bd2a7d57c9132d93a2554be"
+    },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
       "depth": 0,
