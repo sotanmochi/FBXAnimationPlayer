@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.vrmc.gltf": "https://github.com/vrm-c/UniVRM.git?path=/Packages/UniGLTF#v0.131.0",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.10",
     "com.unity.ai.navigation": "2.0.9",
     "com.unity.collab-proxy": "2.11.3",
