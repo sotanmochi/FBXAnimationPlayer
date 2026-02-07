@@ -45,7 +45,7 @@ namespace FbxAnimationPlayer.Samples
             {
                 UnityEngine.Object.Destroy(previousActorParent);
             }
-            _fbxMotionActor = importResult.FbxMotionActor;
+            _fbxMotionActor = importResult.MotionActor;
         }
 
         private void OnVrmModelLoaded(GameObject targetObject)

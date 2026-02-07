@@ -13,7 +13,7 @@ namespace FbxAnimationPlayer
     {
         public bool IsSuccess { get; set; }
         public string ErrorMessage { get; set; }
-        public FbxMotionActor FbxMotionActor { get; set; }
+        public FbxMotionActor MotionActor { get; set; }
         // TODO
     }
 
@@ -248,7 +248,7 @@ namespace FbxAnimationPlayer
             return new ImportResult()
             {
                 IsSuccess = true,
-                FbxMotionActor = motionActor,
+                MotionActor = motionActor,
                 // TODO
             };
         }
