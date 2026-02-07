@@ -50,7 +50,7 @@ namespace FbxAnimationPlayer.Samples
 
             if (Uri.IsWellFormedUriString(path, UriKind.Absolute))
             {
-                var webRequest = UnityWebRequest.Get(path);
+                using var webRequest = UnityWebRequest.Get(path);
                 await webRequest.SendWebRequest();
                 bytes = webRequest.downloadHandler.data;
             }

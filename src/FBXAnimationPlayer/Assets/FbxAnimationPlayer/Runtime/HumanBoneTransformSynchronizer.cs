@@ -20,8 +20,6 @@ namespace FbxAnimationPlayer
         private List<Transform> _targetBones = new(BoneCount);
 
         public bool IsEnabled { get; set; } = true;
-        public List<Transform> SourceBones => _sourceBones;
-        public List<Transform> TargetBones => _targetBones;
 
         void Awake()
         {
