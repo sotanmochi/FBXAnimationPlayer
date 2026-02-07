@@ -8,9 +8,13 @@ namespace FbxAnimationPlayer.Samples
         [SerializeField] private string _defaultVrmModel = "VRM/AvatarSample_A.vrm";
         [SerializeField] private VrmLoader _vrmLoader;
         [SerializeField] private FbxLoader _fbxLoader;
+        [SerializeField] private AnimationControlPanel _animationControlPanel;
 
         [ReadOnly, SerializeField]
-        private FbxMotionActor _fbxMotionActor;
+        private FbxAnimationController _animationController;
+
+        [ReadOnly, SerializeField]
+        private FbxMotionActor _motionActor;
 
         [ReadOnly, SerializeField]
         private GameObject _target;
@@ -25,14 +29,23 @@ namespace FbxAnimationPlayer.Samples
             _vrmLoader.LoadVrmModel(Path.Combine(Application.streamingAssetsPath, _defaultVrmModel));
         }
 
+        void OnDestroy()
+        {
+            if (_fbxLoader != null) _fbxLoader.FbxAnimationLoaded -= OnFbxAnimationLoaded;
+            if (_vrmLoader != null) _vrmLoader.ModelLoaded -= OnVrmModelLoaded;
+
+            _targetPoseHandler?.Dispose();
+            _targetPoseHandler = null;
+        }
+
         void LateUpdate()
         {
-            if (_fbxMotionActor == null || _targetPoseHandler == null)
+            if (_motionActor == null || _targetPoseHandler == null)
             {
                 return;
             }
 
-            if (_fbxMotionActor.TryGetHumanPose(ref _humanPose))
+            if (_motionActor.TryGetHumanPose(ref _humanPose))
             {
                 _targetPoseHandler.SetHumanPose(ref _humanPose);
             }
@@ -40,12 +53,13 @@ namespace FbxAnimationPlayer.Samples
 
         private void OnFbxAnimationLoaded(ImportResult importResult)
         {
-            var previousActorParent = _fbxMotionActor?.transform.parent.gameObject;
-            if (previousActorParent != null)
-            {
-                UnityEngine.Object.Destroy(previousActorParent);
-            }
-            _fbxMotionActor = importResult.MotionActor;
+            _animationController?.Dispose();
+            _motionActor?.Dispose();
+
+            _animationController = importResult.AnimationController;
+            _motionActor = importResult.MotionActor;
+
+            _animationControlPanel.Bind(_animationController);
         }
 
         private void OnVrmModelLoaded(GameObject targetObject)
