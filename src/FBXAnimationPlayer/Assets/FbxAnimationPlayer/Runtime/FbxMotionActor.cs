@@ -5,10 +5,12 @@ namespace FbxAnimationPlayer
 {
     public sealed class FbxMotionActor : MonoBehaviour, IDisposable
     {
+        private Avatar _avatar;
         private HumanPoseHandler _humanPoseHandler;
 
         void OnDestroy()
         {
+            UnityEngine.Object.Destroy(_avatar);
             _humanPoseHandler?.Dispose();
             _humanPoseHandler = null;
         }
@@ -23,6 +25,7 @@ namespace FbxAnimationPlayer
 
         public void SetHumanAvatar(Avatar avatar, Transform avatarRoot)
         {
+            _avatar = avatar;
             _humanPoseHandler?.Dispose();
             _humanPoseHandler = new HumanPoseHandler(avatar, avatarRoot);
         }
