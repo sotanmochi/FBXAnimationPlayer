@@ -13,8 +13,9 @@ namespace FbxAnimationPlayer
     {
         public bool IsSuccess { get; set; }
         public string ErrorMessage { get; set; }
+        public FbxAnimationController AnimationController { get; set; }
         public FbxMotionActor MotionActor { get; set; }
-        // TODO
+        public IReadOnlyList<AnimationClip> AnimationClips { get; set; }
     }
 
     public static class FbxAnimationImporter
@@ -201,6 +202,8 @@ namespace FbxAnimationPlayer
                 };
             }
 
+            fbxResultRootObject.name = "FBX";
+            RemoveLegacyAnimationComponent(fbxResultRootObject);
             RemoveCamerasAndLights(fbxResultRootObject); // Remove unnecessary objects
 
             var gameObject = new GameObject("FBXAnimation");
@@ -209,7 +212,6 @@ namespace FbxAnimationPlayer
             fbxResultRootObject.transform.localRotation = Quaternion.identity;
             fbxResultRootObject.transform.localScale = Vector3.one;
 
-            var animation = fbxResultRootObject.GetComponent<Animation>();
             var animationClips = new List<AnimationClip>();
             if (fbxImportResult.Animations != null)
             {
@@ -231,6 +233,9 @@ namespace FbxAnimationPlayer
                 };
             }
 
+            var animationController = gameObject.AddComponent<FbxAnimationController>();
+            animationController.Setup(fbxResultRootObject, animationClips);
+
             var skeleton = CreateHumanAvatarSkeleton(
                 fbxResultRootObject,
                 animationClips[0],
@@ -248,9 +253,18 @@ namespace FbxAnimationPlayer
             return new ImportResult()
             {
                 IsSuccess = true,
+                AnimationController = animationController,
                 MotionActor = motionActor,
-                // TODO
+                AnimationClips = animationClips,
             };
+        }
+
+        private static void RemoveLegacyAnimationComponent(GameObject gameObject)
+        {
+            if (gameObject.TryGetComponent<Animation>(out var legacyAnimation))
+            {
+                UnityEngine.Object.Destroy(legacyAnimation);
+            }
         }
 
         private static void RemoveCamerasAndLights(GameObject root)
