@@ -202,16 +202,6 @@ namespace FbxAnimationPlayer
                 };
             }
 
-            fbxResultRootObject.name = "FBX";
-            RemoveLegacyAnimationComponent(fbxResultRootObject);
-            RemoveCamerasAndLights(fbxResultRootObject); // Remove unnecessary objects
-
-            var gameObject = new GameObject("FBXAnimation");
-            fbxResultRootObject.transform.SetParent(gameObject.transform);
-            fbxResultRootObject.transform.localPosition = Vector3.zero;
-            fbxResultRootObject.transform.localRotation = Quaternion.identity;
-            fbxResultRootObject.transform.localScale = Vector3.one;
-
             var animationClips = new List<AnimationClip>();
             if (fbxImportResult.Animations != null)
             {
@@ -233,22 +223,38 @@ namespace FbxAnimationPlayer
                 };
             }
 
+            var gameObject = new GameObject("FBXAnimation");
+            fbxResultRootObject.transform.SetParent(gameObject.transform);
+            fbxResultRootObject.transform.localPosition = Vector3.zero;
+            fbxResultRootObject.transform.localRotation = Quaternion.identity;
+            fbxResultRootObject.transform.localScale = Vector3.one;
+
+            fbxResultRootObject.name = "FBX";
+            RemoveLegacyAnimationComponent(fbxResultRootObject);
+            RemoveCamerasAndLights(fbxResultRootObject); // Remove unnecessary objects
+
             var animationController = gameObject.AddComponent<FbxAnimationController>();
             animationController.Setup(fbxResultRootObject, animationClips);
+
+            FbxMotionActor motionActor = null;
 
             var skeleton = CreateHumanAvatarSkeleton(
                 fbxResultRootObject,
                 animationClips[0],
                 out var fbxBoneMap,
                 out var skeletonBoneMap);
-            skeleton.transform.SetParent(gameObject.transform);
 
-            var humanAvatar = HumanAvatarBuilder.BuildHumanAvatar(skeleton, skeletonBoneMap);
-            var motionActor = skeleton.AddComponent<FbxMotionActor>();
-            motionActor.SetHumanAvatar(humanAvatar, skeleton.transform);
+            if (skeleton != null)
+            {
+                skeleton.transform.SetParent(gameObject.transform);
 
-            var synchronizer = skeleton.AddComponent<HumanBoneTransformSynchronizer>();
-            synchronizer.Setup(fbxBoneMap, skeletonBoneMap);
+                var humanAvatar = HumanAvatarBuilder.BuildHumanAvatar(skeleton, skeletonBoneMap);
+                motionActor = skeleton.AddComponent<FbxMotionActor>();
+                motionActor.SetHumanAvatar(humanAvatar, skeleton.transform);
+
+                var synchronizer = skeleton.AddComponent<HumanBoneTransformSynchronizer>();
+                synchronizer.Setup(fbxBoneMap, skeletonBoneMap);
+            }
 
             return new ImportResult()
             {
