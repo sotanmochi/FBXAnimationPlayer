@@ -49,7 +49,7 @@ namespace FbxAnimationPlayer.Samples
 
             if (Uri.IsWellFormedUriString(path, UriKind.Absolute))
             {
-                var webRequest = UnityWebRequest.Get(path);
+                using var webRequest = UnityWebRequest.Get(path);
                 await webRequest.SendWebRequest();
                 bytes = webRequest.downloadHandler.data;
             }
@@ -65,6 +65,11 @@ namespace FbxAnimationPlayer.Samples
             }
 
             var importResult = await FbxAnimationImporter.LoadAsync(new MemoryStream(bytes), cancellationToken);
+            if (!importResult.IsSuccess)
+            {
+                Debug.Log($"<color=orange>Failed to import FBX animation: {importResult.ErrorMessage}</color>");
+                return;
+            }
             FbxAnimationLoaded?.Invoke(importResult);
         }
     }
