@@ -16,7 +16,7 @@ namespace FbxAnimationPlayer
                 return new Dictionary<HumanBodyBones, Transform>();
             }
 
-            var boneTranformMap = new Dictionary<HumanBodyBones, Transform>();
+            var boneTransformMap = new Dictionary<HumanBodyBones, Transform>();
             var mappedTransforms = new HashSet<Transform>();
             var allTransforms = skeletonRoot.GetComponentsInChildren<Transform>();
 
@@ -38,7 +38,7 @@ namespace FbxAnimationPlayer
                 foreach (var kvp in BoneNamePatterns)
                 {
                     var bone = kvp.Key;
-                    if (boneTranformMap.ContainsKey(bone))
+                    if (boneTransformMap.ContainsKey(bone))
                     {
                         continue;
                     }
@@ -48,7 +48,7 @@ namespace FbxAnimationPlayer
                     {
                         if (normalizedName == namePattern || normalizedName.Contains(namePattern))
                         {
-                            boneTranformMap[bone] = transform;
+                            boneTransformMap[bone] = transform;
                             mappedTransforms.Add(transform);
                             break;
                         }
@@ -61,7 +61,7 @@ namespace FbxAnimationPlayer
                 }
             }
 
-            return boneTranformMap;
+            return boneTransformMap;
         }
 
         /// <summary>
