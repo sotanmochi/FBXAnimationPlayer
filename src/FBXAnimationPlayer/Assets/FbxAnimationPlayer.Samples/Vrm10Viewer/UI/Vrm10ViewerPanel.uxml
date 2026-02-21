@@ -1,0 +1,37 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="Vrm10ViewerPanel.uss" />
+    <ui:VisualElement name="root" class="root-container">
+
+        <!-- Top bar: app title + file load buttons -->
+        <ui:VisualElement name="header" class="header">
+            <ui:Label text="FBX Animation Player" class="app-title" />
+            <ui:VisualElement class="header-spacer" />
+            <ui:Button name="load-vrm-button" text="Load VRM" class="load-button" />
+            <ui:Button name="load-fbx-button" text="Load FBX" class="load-button" />
+        </ui:VisualElement>
+
+        <!-- Bottom bar: seek + playback controls -->
+        <ui:VisualElement name="animation-controls" class="controls-panel">
+
+            <!-- Row 1: seek bar + time label -->
+            <ui:VisualElement class="seek-row">
+                <ui:Slider name="seek-bar" low-value="0" high-value="1" value="0"
+                           direction="Horizontal" class="seek-bar" />
+                <ui:Label name="time-label" text="0.00 / 0.00 [s]" class="time-label" />
+            </ui:VisualElement>
+
+            <!-- Divider -->
+            <ui:VisualElement class="divider" />
+
+            <!-- Row 2: playback controls -->
+            <ui:VisualElement class="playback-row">
+                <ui:Button name="play-pause-button" text="Play" class="play-button" />
+                <ui:Button name="stop-button" text="Stop" class="stop-button" />
+                <ui:VisualElement class="playback-spacer" />
+                <ui:Toggle name="loop-toggle" label="Loop" class="loop-toggle" value="true" />
+            </ui:VisualElement>
+
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

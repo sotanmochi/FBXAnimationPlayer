@@ -5,26 +5,27 @@ using Cysharp.Threading.Tasks;
 using SFB;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 namespace FbxAnimationPlayer.Samples
 {
-    public class FbxLoader : MonoBehaviour
+    public sealed class FbxLoader : IDisposable
     {
-        [SerializeField] private Button _loadButton;
-
         private readonly CancellationTokenSource _cancellationTokenSource = new();
+
+        private Button _loadButton;
 
         public event Action<ImportResult> FbxAnimationLoaded;
 
-        void Awake()
+        public void Setup(VisualElement root)
         {
-            _loadButton.onClick.AddListener(OpenFileBrowser);
+            _loadButton = root.Q<Button>("load-fbx-button");
+            _loadButton.clicked += OpenFileBrowser;
         }
 
-        void OnDestroy()
+        public void Dispose()
         {
-            _loadButton.onClick.RemoveAllListeners();
+            if (_loadButton != null) _loadButton.clicked -= OpenFileBrowser;
             _cancellationTokenSource.Cancel();
             _cancellationTokenSource.Dispose();
         }

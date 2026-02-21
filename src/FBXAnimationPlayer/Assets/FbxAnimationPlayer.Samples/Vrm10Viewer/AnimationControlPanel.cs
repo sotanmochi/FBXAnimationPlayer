@@ -1,36 +1,45 @@
-using UnityEngine;
-using UnityEngine.UI;
+using System;
+using UnityEngine.UIElements;
 
 namespace FbxAnimationPlayer.Samples
 {
-    public sealed class AnimationControlPanel : MonoBehaviour
+    public sealed class AnimationControlPanel : IDisposable
     {
-        [SerializeField] private bool _autoPlay = true;
-        [SerializeField] private Button _playPauseButton;
-        [SerializeField] private Text _playPauseLabel;
-        [SerializeField] private Button _stopButton;
-        [SerializeField] private Toggle _loopToggle;
-        [SerializeField] private Slider _seekBar;
-        [SerializeField] private Text _timeLabel;
+        private Button _playPauseButton;
+        private Button _stopButton;
+        private Toggle _loopToggle;
+        private Slider _seekBar;
+        private Label _timeLabel;
 
         private FbxAnimationController _animationController;
 
-        void Awake()
+        public void Setup(VisualElement root)
         {
-            _playPauseButton.onClick.AddListener(OnPlayPauseClicked);
-            _stopButton.onClick.AddListener(OnStopClicked);
-            _loopToggle.onValueChanged.AddListener(OnLoopToggleValueChanged);
-            _seekBar.onValueChanged.AddListener(OnSeekBarValueChanged);
-            SetInteractable(false);
+            _playPauseButton = root.Q<Button>("play-pause-button");
+            _stopButton      = root.Q<Button>("stop-button");
+            _loopToggle      = root.Q<Toggle>("loop-toggle");
+            _seekBar         = root.Q<Slider>("seek-bar");
+            _timeLabel       = root.Q<Label>("time-label");
+
+            _playPauseButton.clicked += OnPlayPauseClicked;
+            _stopButton.clicked      += OnStopClicked;
+            _loopToggle.RegisterValueChangedCallback(OnLoopToggleValueChanged);
+            _seekBar.RegisterValueChangedCallback(OnSeekBarValueChanged);
+
+            SetEnabled(false);
         }
 
-        void OnDestroy()
+        public void Dispose()
         {
             Unbind();
-            _loopToggle.onValueChanged.RemoveAllListeners();
-            _playPauseButton.onClick.RemoveAllListeners();
-            _stopButton.onClick.RemoveAllListeners();
-            _seekBar.onValueChanged.RemoveAllListeners();
+
+            // Setup() が呼ばれていない場合は全フィールドが null のため何もしない
+            if (_playPauseButton == null) return;
+
+            _playPauseButton.clicked -= OnPlayPauseClicked;
+            _stopButton.clicked      -= OnStopClicked;
+            _loopToggle.UnregisterValueChangedCallback(OnLoopToggleValueChanged);
+            _seekBar.UnregisterValueChangedCallback(OnSeekBarValueChanged);
         }
 
         public void Bind(FbxAnimationController controller)
@@ -39,17 +48,12 @@ namespace FbxAnimationPlayer.Samples
 
             _animationController = controller;
             _animationController.StateChanged += OnStateChanged;
-            _animationController.TimeUpdated += OnTimeUpdated;
+            _animationController.TimeUpdated  += OnTimeUpdated;
 
             _seekBar.SetValueWithoutNotify(0f);
             UpdateTimeLabel(0f, _animationController.Duration);
-            UpdatePlayPauseLabel(_animationController.State);
-            SetInteractable(true);
-
-            if (_autoPlay)
-            {
-                _animationController.Play();
-            }
+            UpdatePlayPauseButton(_animationController.State);
+            SetEnabled(true);
         }
 
         private void Unbind()
@@ -57,10 +61,10 @@ namespace FbxAnimationPlayer.Samples
             if (_animationController == null) return;
 
             _animationController.StateChanged -= OnStateChanged;
-            _animationController.TimeUpdated -= OnTimeUpdated;
+            _animationController.TimeUpdated  -= OnTimeUpdated;
             _animationController = null;
 
-            SetInteractable(false);
+            SetEnabled(false);
         }
 
         private void OnPlayPauseClicked()
@@ -84,20 +88,20 @@ namespace FbxAnimationPlayer.Samples
             _animationController?.Stop();
         }
 
-        private void OnLoopToggleValueChanged(bool isOn)
+        private void OnLoopToggleValueChanged(ChangeEvent<bool> evt)
         {
             if (_animationController == null) return;
-            _animationController.IsLooping = isOn;
+            _animationController.IsLooping = evt.newValue;
         }
 
-        private void OnSeekBarValueChanged(float value)
+        private void OnSeekBarValueChanged(ChangeEvent<float> evt)
         {
-            _animationController?.SeekNormalized(value);
+            _animationController?.SeekNormalized(evt.newValue);
         }
 
         private void OnStateChanged(AnimationPlayState state)
         {
-            UpdatePlayPauseLabel(state);
+            UpdatePlayPauseButton(state);
         }
 
         private void OnTimeUpdated(float currentTime)
@@ -107,22 +111,21 @@ namespace FbxAnimationPlayer.Samples
             UpdateTimeLabel(currentTime, _animationController.Duration);
         }
 
-        private void UpdatePlayPauseLabel(AnimationPlayState state)
+        private void UpdatePlayPauseButton(AnimationPlayState state)
         {
-            _playPauseLabel.text = state == AnimationPlayState.Playing ? "Pause" : "Play";
+            _playPauseButton.text = state == AnimationPlayState.Playing ? "Pause" : "Play";
         }
 
         private void UpdateTimeLabel(float currentTime, float duration)
         {
-            if (_timeLabel == null) return;
             _timeLabel.text = $"{currentTime:F2} / {duration:F2} [s]";
         }
 
-        private void SetInteractable(bool interactable)
+        private void SetEnabled(bool enabled)
         {
-            _playPauseButton.interactable = interactable;
-            _stopButton.interactable = interactable;
-            _seekBar.interactable = interactable;
+            _playPauseButton.SetEnabled(enabled);
+            _stopButton.SetEnabled(enabled);
+            _seekBar.SetEnabled(enabled);
         }
     }
 }

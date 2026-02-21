@@ -1,0 +1,239 @@
+/* =====================================================================
+   Color palette
+   - bg-panel : rgba(12, 14, 20, 0.88)
+   - accent    : rgb(64, 196, 168)   teal
+   - accent-dk : rgb(45, 160, 138)   teal (hover / pressed)
+   - fg        : rgb(230, 230, 230)
+   - fg-muted  : rgb(160, 160, 160)
+   - border    : rgba(255, 255, 255, 0.15)
+   ===================================================================== */
+
+/* ── Root ─────────────────────────────────────────────────────────── */
+
+.root-container {
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+/* ── Header ───────────────────────────────────────────────────────── */
+
+.header {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: rgba(12, 14, 20, 0.88);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+.app-title {
+    font-size: 15px;
+    color: rgb(230, 230, 230);
+    -unity-font-style: bold;
+}
+
+.header-spacer {
+    flex-grow: 1;
+}
+
+/* ── Load buttons (header) ────────────────────────────────────────── */
+
+.load-button {
+    height: 44px;
+    min-width: 110px;
+    margin-left: 8px;
+    padding: 0 16px;
+    font-size: 14px;
+    color: rgb(64, 196, 168);
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 1px;
+    border-color: rgb(64, 196, 168);
+    border-radius: 6px;
+    -unity-text-align: middle-center;
+    transition-duration: 0.12s;
+    transition-property: background-color, border-color;
+}
+
+.load-button:hover {
+    background-color: rgba(64, 196, 168, 0.12);
+}
+
+.load-button:active {
+    background-color: rgba(64, 196, 168, 0.25);
+    border-color: rgb(45, 160, 138);
+    color: rgb(45, 160, 138);
+}
+
+.load-button:disabled {
+    opacity: 0.35;
+}
+
+/* ── Controls panel (bottom bar) ─────────────────────────────────── */
+
+.controls-panel {
+    flex-direction: column;
+    padding: 8px 14px 10px;
+    background-color: rgba(12, 14, 20, 0.88);
+    border-top-width: 1px;
+    border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+/* ── Seek row ─────────────────────────────────────────────────────── */
+
+.seek-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.seek-bar {
+    flex-grow: 1;
+    height: 36px;
+    margin-right: 8px;
+}
+
+/* Slider track */
+.seek-bar .unity-base-slider__tracker {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    height: 4px;
+}
+
+/* Filled portion (progress) */
+.seek-bar .unity-base-slider__dragger-container {
+    height: 4px;
+}
+
+/* Thumb */
+.seek-bar .unity-base-slider__dragger {
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    background-color: rgb(64, 196, 168);
+    border-width: 0;
+    top: -6px;
+    transition-duration: 0.1s;
+    transition-property: width, height;
+}
+
+.seek-bar:hover .unity-base-slider__dragger {
+    width: 20px;
+    height: 20px;
+    top: -8px;
+}
+
+.time-label {
+    font-size: 12px;
+    color: rgb(160, 160, 160);
+    -unity-text-align: middle-right;
+    min-width: 110px;
+}
+
+/* ── Divider ──────────────────────────────────────────────────────── */
+
+.divider {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.1);
+    margin: 4px 0;
+}
+
+/* ── Playback row ─────────────────────────────────────────────────── */
+
+.playback-row {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 4px;
+}
+
+.playback-spacer {
+    flex-grow: 1;
+}
+
+/* Play button – filled teal */
+.play-button {
+    height: 44px;
+    min-width: 88px;
+    margin-right: 8px;
+    padding: 0 20px;
+    font-size: 14px;
+    color: rgb(12, 14, 20);
+    background-color: rgb(64, 196, 168);
+    border-width: 0;
+    border-radius: 6px;
+    -unity-text-align: middle-center;
+    -unity-font-style: bold;
+    transition-duration: 0.12s;
+    transition-property: background-color;
+}
+
+.play-button:hover {
+    background-color: rgb(82, 210, 182);
+}
+
+.play-button:active {
+    background-color: rgb(45, 160, 138);
+}
+
+.play-button:disabled {
+    opacity: 0.35;
+}
+
+/* Stop button – ghost (outline) */
+.stop-button {
+    height: 44px;
+    min-width: 88px;
+    padding: 0 20px;
+    font-size: 14px;
+    color: rgb(200, 200, 200);
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.28);
+    border-radius: 6px;
+    -unity-text-align: middle-center;
+    transition-duration: 0.12s;
+    transition-property: background-color, border-color;
+}
+
+.stop-button:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.45);
+}
+
+.stop-button:active {
+    background-color: rgba(255, 255, 255, 0.16);
+}
+
+.stop-button:disabled {
+    opacity: 0.35;
+}
+
+/* ── Loop toggle ──────────────────────────────────────────────────── */
+
+.loop-toggle {
+    flex-direction: row;
+    align-items: center;
+}
+
+/* Label text */
+.loop-toggle > .unity-label {
+    font-size: 13px;
+    color: rgb(200, 200, 200);
+    margin-left: 6px;
+}
+
+/* Checkmark box */
+.loop-toggle .unity-toggle__checkmark {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Checked state */
+.loop-toggle:checked .unity-toggle__checkmark {
+    background-color: rgb(64, 196, 168);
+    border-color: rgb(64, 196, 168);
+}

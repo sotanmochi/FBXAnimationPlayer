@@ -5,27 +5,28 @@ using Cysharp.Threading.Tasks;
 using SFB;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
 using UniVRM10;
 
 namespace FbxAnimationPlayer.Samples
 {
-    public class VrmLoader : MonoBehaviour
+    public sealed class VrmLoader : IDisposable
     {
-        [SerializeField] private Button _loadButton;
-
         private readonly CancellationTokenSource _cancellationTokenSource = new();
+
+        private Button _loadButton;
 
         public event Action<GameObject> ModelLoaded;
 
-        void Awake()
+        public void Setup(VisualElement root)
         {
-            _loadButton.onClick.AddListener(OpenFileBrowser);
+            _loadButton = root.Q<Button>("load-vrm-button");
+            _loadButton.clicked += OpenFileBrowser;
         }
 
-        void OnDestroy()
+        public void Dispose()
         {
-            _loadButton.onClick.RemoveAllListeners();
+            if (_loadButton != null) _loadButton.clicked -= OpenFileBrowser;
             _cancellationTokenSource.Cancel();
             _cancellationTokenSource.Dispose();
         }

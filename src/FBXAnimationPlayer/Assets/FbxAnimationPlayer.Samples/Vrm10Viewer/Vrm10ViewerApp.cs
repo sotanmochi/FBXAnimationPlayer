@@ -1,14 +1,14 @@
 using System.IO;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace FbxAnimationPlayer.Samples
 {
     public sealed class Vrm10ViewerApp : MonoBehaviour
     {
+        [SerializeField] private UIDocument _uiDocument;
         [SerializeField] private string _defaultVrmModel = "VRM/AvatarSample_A.vrm";
-        [SerializeField] private VrmLoader _vrmLoader;
-        [SerializeField] private FbxLoader _fbxLoader;
-        [SerializeField] private AnimationControlPanel _animationControlPanel;
+        [SerializeField] private bool _autoPlayFbxAnimation = true;
 
         [ReadOnly, SerializeField]
         private FbxAnimationController _animationController;
@@ -19,11 +19,20 @@ namespace FbxAnimationPlayer.Samples
         [ReadOnly, SerializeField]
         private GameObject _target;
 
+        private readonly VrmLoader _vrmLoader = new();
+        private readonly FbxLoader _fbxLoader = new();
+        private readonly AnimationControlPanel _animationControlPanel = new();
+
         private HumanPose _humanPose;
         private HumanPoseHandler _targetPoseHandler;
 
         void Start()
         {
+            var root = _uiDocument.rootVisualElement;
+            _vrmLoader.Setup(root);
+            _fbxLoader.Setup(root);
+            _animationControlPanel.Setup(root);
+
             _fbxLoader.FbxAnimationLoaded += OnFbxAnimationLoaded;
             _vrmLoader.ModelLoaded += OnVrmModelLoaded;
             _vrmLoader.LoadVrmModel(Path.Combine(Application.streamingAssetsPath, _defaultVrmModel));
@@ -31,8 +40,12 @@ namespace FbxAnimationPlayer.Samples
 
         void OnDestroy()
         {
-            if (_fbxLoader != null) _fbxLoader.FbxAnimationLoaded -= OnFbxAnimationLoaded;
-            if (_vrmLoader != null) _vrmLoader.ModelLoaded -= OnVrmModelLoaded;
+            _fbxLoader.FbxAnimationLoaded -= OnFbxAnimationLoaded;
+            _vrmLoader.ModelLoaded -= OnVrmModelLoaded;
+
+            _animationControlPanel.Dispose();
+            _fbxLoader.Dispose();
+            _vrmLoader.Dispose();
 
             _targetPoseHandler?.Dispose();
             _targetPoseHandler = null;
@@ -60,6 +73,11 @@ namespace FbxAnimationPlayer.Samples
             _motionActor = importResult.MotionActor;
 
             _animationControlPanel.Bind(_animationController);
+
+            if (_autoPlayFbxAnimation)
+            {
+                _animationController.Play();
+            }
         }
 
         private void OnVrmModelLoaded(GameObject targetObject)

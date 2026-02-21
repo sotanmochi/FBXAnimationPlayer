@@ -1,0 +1,58 @@
+/*
+ * モバイル向けの上書きスタイル。
+ * PanelSettings で条件付きに適用するか、
+ * SafeAreaHandler から動的に AddStyleSheet する。
+ */
+
+.app-title {
+    font-size: 17px;
+}
+
+.load-button {
+    height: 52px;
+    min-width: 130px;
+    font-size: 15px;
+}
+
+.seek-bar {
+    height: 44px;
+}
+
+/* Larger thumb for finger input */
+.seek-bar .unity-base-slider__dragger {
+    width: 24px;
+    height: 24px;
+    top: -10px;
+}
+
+.seek-bar:hover .unity-base-slider__dragger {
+    width: 24px;
+    height: 24px;
+    top: -10px;
+}
+
+.time-label {
+    font-size: 13px;
+    min-width: 120px;
+}
+
+.play-button {
+    height: 52px;
+    min-width: 100px;
+    font-size: 15px;
+}
+
+.stop-button {
+    height: 52px;
+    min-width: 100px;
+    font-size: 15px;
+}
+
+.loop-toggle .unity-toggle__checkmark {
+    width: 28px;
+    height: 28px;
+}
+
+.loop-toggle > .unity-label {
+    font-size: 15px;
+}
