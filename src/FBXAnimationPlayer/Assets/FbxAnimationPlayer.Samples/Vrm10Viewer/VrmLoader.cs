@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using SFB;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UIElements;
@@ -13,6 +12,7 @@ namespace FbxAnimationPlayer.Samples
     public sealed class VrmLoader : IDisposable
     {
         private readonly CancellationTokenSource _cancellationTokenSource = new();
+        private readonly IFilePicker _filePicker = FilePickerFactory.Create();
 
         private Button _loadButton;
 
@@ -21,23 +21,24 @@ namespace FbxAnimationPlayer.Samples
         public void Setup(VisualElement root)
         {
             _loadButton = root.Q<Button>("load-vrm-button");
-            _loadButton.clicked += OpenFileBrowser;
+            _loadButton.clicked += OpenFilePicker;
         }
 
         public void Dispose()
         {
-            if (_loadButton != null) _loadButton.clicked -= OpenFileBrowser;
+            if (_loadButton != null) _loadButton.clicked -= OpenFilePicker;
             _cancellationTokenSource.Cancel();
             _cancellationTokenSource.Dispose();
         }
 
-        private void OpenFileBrowser()
+        private void OpenFilePicker()
         {
-            var paths = StandaloneFileBrowser.OpenFilePanel("Open VRM File", "", "vrm", false);
-            if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
+            _filePicker.PickFile("Open VRM File", new[] { "vrm" }, async path =>
             {
-                LoadVrmModel(paths[0]);
-            }
+                if (path == null) return;
+                await UniTask.SwitchToMainThread();
+                LoadVrmModel(path);
+            });
         }
 
         public void LoadVrmModel(string path)
