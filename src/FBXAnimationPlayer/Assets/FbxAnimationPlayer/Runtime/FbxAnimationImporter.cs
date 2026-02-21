@@ -52,7 +52,7 @@ namespace FbxAnimationPlayer
             }
             catch (Exception ex)
             {
-                DebugLogger.LogError($"Failed to load FBX animation from stream: {ex.Message}");
+                DebugLogger.LogError(ex);
             }
 
             return new ImportResult()
@@ -269,7 +269,7 @@ namespace FbxAnimationPlayer
         {
             if (gameObject.TryGetComponent<Animation>(out var legacyAnimation))
             {
-                UnityEngine.Object.Destroy(legacyAnimation);
+                UnityObjectDestroyer.DestroyRuntimeOrEditor(legacyAnimation);
             }
         }
 
@@ -278,13 +278,13 @@ namespace FbxAnimationPlayer
             var cameras = root.GetComponentsInChildren<Camera>(true);
             foreach (var camera in cameras)
             {
-                UnityEngine.Object.Destroy(camera.gameObject);
+                UnityObjectDestroyer.DestroyRuntimeOrEditor(camera.gameObject);
             }
 
             var lights = root.GetComponentsInChildren<Light>(true);
             foreach (var light in lights)
             {
-                UnityEngine.Object.Destroy(light.gameObject);
+                UnityObjectDestroyer.DestroyRuntimeOrEditor(light.gameObject);
             }
         }
 
@@ -310,7 +310,7 @@ namespace FbxAnimationPlayer
             else
             {
                 DebugLogger.LogError($"Hips bone not found in FBX skeleton.");
-                UnityEngine.Object.Destroy(skeleton);
+                UnityObjectDestroyer.DestroyRuntimeOrEditor(skeleton);
                 skeleton = null;
             }
 
