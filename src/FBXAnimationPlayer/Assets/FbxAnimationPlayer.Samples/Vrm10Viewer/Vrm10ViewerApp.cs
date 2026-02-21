@@ -69,7 +69,7 @@ namespace FbxAnimationPlayer.Samples
                 _targetPoseHandler?.Dispose();
                 _targetPoseHandler = null;
 
-                UnityEngine.Object.Destroy(_target);
+                UnityObjectDestroyer.DestroyRuntimeOrEditor(_target);
                 _target = null;
 
                 _targetPoseHandler = new HumanPoseHandler(animator.avatar, animator.transform);

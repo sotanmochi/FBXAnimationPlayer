@@ -10,7 +10,7 @@ namespace FbxAnimationPlayer
 
         void OnDestroy()
         {
-            UnityEngine.Object.Destroy(_avatar);
+            UnityObjectDestroyer.DestroyRuntimeOrEditor(_avatar);
             _humanPoseHandler?.Dispose();
             _humanPoseHandler = null;
         }
@@ -19,7 +19,7 @@ namespace FbxAnimationPlayer
         {
             if (this != null && this.gameObject != null)
             {
-                UnityEngine.Object.Destroy(this.gameObject);
+                UnityObjectDestroyer.DestroyRuntimeOrEditor(this.gameObject);
             }
         }
 

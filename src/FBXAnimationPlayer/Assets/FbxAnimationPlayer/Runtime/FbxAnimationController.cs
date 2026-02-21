@@ -56,7 +56,7 @@ namespace FbxAnimationPlayer
 
             foreach (var clip in _clips)
             {
-                UnityEngine.Object.Destroy(clip);
+                UnityObjectDestroyer.DestroyRuntimeOrEditor(clip);
             }
             _clips.Clear();
         }
@@ -65,7 +65,7 @@ namespace FbxAnimationPlayer
         {
             if (this != null && this.gameObject != null)
             {
-                UnityEngine.Object.Destroy(this.gameObject);
+                UnityObjectDestroyer.DestroyRuntimeOrEditor(this.gameObject);
             }
         }
 
