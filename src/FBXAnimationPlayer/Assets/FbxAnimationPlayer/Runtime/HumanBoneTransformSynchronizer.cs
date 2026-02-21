@@ -21,15 +21,6 @@ namespace FbxAnimationPlayer
 
         public bool IsEnabled { get; set; } = true;
 
-        void Awake()
-        {
-            for (var i = 0; i < BoneCount; i++)
-            {
-                _sourceBones.Add(null);
-                _targetBones.Add(null);
-            }
-        }
-
         void LateUpdate()
         {
             if (!IsEnabled) return;
@@ -39,6 +30,22 @@ namespace FbxAnimationPlayer
         public void Setup(Dictionary<HumanBodyBones, Transform> sourceBones,
             Dictionary<HumanBodyBones, Transform> targetBones)
         {
+            if (_sourceBones.Count < BoneCount)
+            {
+                for (var i = _sourceBones.Count; i < BoneCount; i++)
+                {
+                    _sourceBones.Add(null);
+                }
+            }
+
+            if (_targetBones.Count < BoneCount)
+            {
+                for (var i = _targetBones.Count; i < BoneCount; i++)
+                {
+                    _targetBones.Add(null);
+                }
+            }
+
             _sourceHips = sourceBones.GetValueOrDefault(HumanBodyBones.Hips);
             _targetHips = targetBones.GetValueOrDefault(HumanBodyBones.Hips);
 
@@ -49,7 +56,7 @@ namespace FbxAnimationPlayer
             }
         }
 
-        public void Reset()
+        public void Clear()
         {
             _sourceHips = null;
             _targetHips = null;
