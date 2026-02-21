@@ -223,6 +223,13 @@
       },
       "hash": "3b99078d26b362733ad9bf463f98c83b8a1b4c9f"
     },
+    "com.yasirkula.nativefilepicker": {
+      "version": "https://github.com/yasirkula/UnityNativeFilePicker.git#v1.4.1",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "c4facf570140a8d24c32ff0318db100ade326710"
+    },
     "io.github.gkngkc.unity-standalone-file-browser": {
       "version": "https://github.com/sotanmochi/UnityStandaloneFileBrowser.git?path=Assets/StandaloneFileBrowser#1.2.3",
       "depth": 0,
