@@ -26,3 +26,6 @@ You can also install via editing Packages/manifest.json directly.
   }
 }
 ```
+### Lightweight FBX Importer
+- [Lightweight FBX Importer Setup (English)](./src/FBXAnimationPlayer/Assets/FbxAnimationPlayer/Docs~/setup-lightweight-fbx-importer-en.md)
+- [Lightweight FBX Importer のセットアップ (日本語)](./src/FBXAnimationPlayer/Assets/FbxAnimationPlayer/Docs~/setup-lightweight-fbx-importer-ja.md)
