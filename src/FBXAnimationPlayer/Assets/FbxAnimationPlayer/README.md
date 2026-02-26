@@ -3,6 +3,7 @@
 A runtime FBX animation importer and player for Unity.
 
 ## Dependencies
+- [UniTask](https://github.com/Cysharp/UniTask)
 - [Lightweight FBX Importer](https://ricardoreis.net/lightweight-fbx-importer/)
     - [Unity Asset Store](https://assetstore.unity.com/packages/tools/modeling/lightweight-fbx-importer-318963)
     - [Documentation](https://ricardoreis.net/fbximporter/docs/)
@@ -25,3 +26,7 @@ You can also install via editing Packages/manifest.json directly.
   }
 }
 ```
+
+### Lightweight FBX Importer
+- [Lightweight FBX Importer Setup (English)](./Docs~/setup-lightweight-fbx-importer-en.md)
+- [Lightweight FBX Importer のセットアップ (日本語)](./Docs~/setup-lightweight-fbx-importer-ja.md)

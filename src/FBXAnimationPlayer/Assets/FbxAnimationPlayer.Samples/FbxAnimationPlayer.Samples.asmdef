@@ -6,7 +6,8 @@
         "UniTask",
         "StandaloneFileBrowser",
         "VRM10",
-        "UniGLTF"
+        "UniGLTF",
+        "NativeFilePicker.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
