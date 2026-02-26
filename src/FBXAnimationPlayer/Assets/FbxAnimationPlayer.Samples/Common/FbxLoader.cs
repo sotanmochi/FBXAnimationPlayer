@@ -11,7 +11,9 @@ namespace FbxAnimationPlayer.Samples
     public sealed class FbxLoader : IDisposable
     {
         private readonly CancellationTokenSource _cancellationTokenSource = new();
+#if !UNITY_WEBGL
         private readonly IFilePicker _filePicker = FilePickerFactory.Create();
+#endif
 
         private Button _loadButton;
 
@@ -32,12 +34,14 @@ namespace FbxAnimationPlayer.Samples
 
         private void OpenFilePicker()
         {
+#if !UNITY_WEBGL
             _filePicker.PickFile("Open FBX File", new[] { "fbx" }, async path =>
             {
                 if (path == null) return;
                 await UniTask.SwitchToMainThread();
                 LoadFbxAnimation(path);
             });
+#endif
         }
 
         public void LoadFbxAnimation(string path)
