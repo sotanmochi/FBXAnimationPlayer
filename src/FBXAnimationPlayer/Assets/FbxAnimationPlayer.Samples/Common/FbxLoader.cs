@@ -11,13 +11,16 @@ namespace FbxAnimationPlayer.Samples
     public sealed class FbxLoader : IDisposable
     {
         private readonly CancellationTokenSource _cancellationTokenSource = new();
-#if !UNITY_WEBGL
-        private readonly IFilePicker _filePicker = FilePickerFactory.Create();
-#endif
+        private readonly IFilePicker _filePicker;
 
         private Button _loadButton;
 
         public event Action<ImportResult> FbxAnimationLoaded;
+
+        public FbxLoader(IFilePickerFactory filePickerFactory)
+        {
+            _filePicker = filePickerFactory?.Create();
+        }
 
         public void Setup(VisualElement root)
         {

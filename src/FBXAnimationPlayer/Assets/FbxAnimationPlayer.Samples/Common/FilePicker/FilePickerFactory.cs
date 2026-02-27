@@ -1,8 +1,8 @@
 namespace FbxAnimationPlayer.Samples
 {
-    public static class FilePickerFactory
+    public sealed class FilePickerFactory : IFilePickerFactory
     {
-        public static IFilePicker Create()
+        public IFilePicker Create()
         {
 #if UNITY_EDITOR
             return new StandaloneFilePicker();
