@@ -19,8 +19,8 @@ namespace FbxAnimationPlayer.Samples
         [ReadOnly, SerializeField]
         private GameObject _target;
 
-        private readonly VrmLoader _vrmLoader = new();
-        private readonly FbxLoader _fbxLoader = new();
+        private readonly VrmLoader _vrmLoader = new(new FilePickerFactory());
+        private readonly FbxLoader _fbxLoader = new(new FilePickerFactory());
         private readonly AnimationControlPanel _animationControlPanel = new();
 
         private HumanPose _humanPose;
