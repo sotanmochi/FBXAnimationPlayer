@@ -8,6 +8,32 @@
             <ui:VisualElement class="header-spacer" />
             <ui:Button name="load-vrm-button" text="Load VRM" class="load-button" />
             <ui:Button name="load-fbx-button" text="Load FBX" class="load-button" />
+            <ui:Button name="settings-button" text="&#x2699;" class="settings-button" />
+        </ui:VisualElement>
+
+        <!-- Settings Panel (overlay, initially hidden) -->
+        <ui:VisualElement name="settings-panel" class="settings-panel" style="display: none;">
+            <ui:Label text="Settings" class="settings-title" />
+
+            <!-- Background Color -->
+            <ui:VisualElement class="settings-section">
+                <ui:Label text="Background Color" class="settings-label" />
+                <ui:VisualElement name="color-preview" class="color-preview" />
+                <ui:Slider name="color-r" label="R" low-value="0" high-value="1" value="0" class="color-slider color-slider-r" />
+                <ui:Slider name="color-g" label="G" low-value="0" high-value="1" value="1" class="color-slider color-slider-g" />
+                <ui:Slider name="color-b" label="B" low-value="0" high-value="1" value="0" class="color-slider color-slider-b" />
+            </ui:VisualElement>
+
+            <!-- Field of View -->
+            <ui:VisualElement class="settings-section">
+                <ui:Label text="Field of View" class="settings-label" />
+                <ui:Slider name="fov-slider" low-value="10" high-value="100" value="30" class="fov-slider" />
+            </ui:VisualElement>
+
+            <!-- Camera Reset -->
+            <ui:VisualElement class="settings-section">
+                <ui:Button name="reset-camera-button" text="Reset Camera" class="reset-camera-button" />
+            </ui:VisualElement>
         </ui:VisualElement>
 
         <!-- Bottom bar: seek + playback controls -->

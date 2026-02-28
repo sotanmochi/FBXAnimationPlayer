@@ -7,6 +7,7 @@ namespace FbxAnimationPlayer.Samples
     public sealed class Vrm10ViewerApp : MonoBehaviour
     {
         [SerializeField] private UIDocument _uiDocument;
+        [SerializeField] private OrbitCameraController _orbitCameraController;
         [SerializeField] private string _defaultVrmModel = "VRM/AvatarSample_A.vrm";
         [SerializeField] private bool _autoPlayFbxAnimation = true;
 
@@ -22,6 +23,8 @@ namespace FbxAnimationPlayer.Samples
         private readonly VrmLoader _vrmLoader = new(new FilePickerFactory());
         private readonly FbxLoader _fbxLoader = new(new FilePickerFactory());
         private readonly AnimationControlPanel _animationControlPanel = new();
+        private readonly CameraBackgroundColorController _bgColorController = new();
+        private readonly SettingsPanel _settingsPanel = new();
 
         private HumanPose _humanPose;
         private HumanPoseHandler _targetPoseHandler;
@@ -33,6 +36,11 @@ namespace FbxAnimationPlayer.Samples
             _fbxLoader.Setup(root);
             _animationControlPanel.Setup(root);
 
+            _bgColorController.SetCamera(Camera.main);
+            _settingsPanel.Setup(root, _bgColorController);
+            _settingsPanel.FoVChanged += OnFoVChanged;
+            _settingsPanel.ResetCameraRequested += OnResetCameraRequested;
+
             _fbxLoader.FbxAnimationLoaded += OnFbxAnimationLoaded;
             _vrmLoader.ModelLoaded += OnVrmModelLoaded;
             _vrmLoader.LoadVrmModel(Path.Combine(Application.streamingAssetsPath, _defaultVrmModel));
@@ -42,7 +50,10 @@ namespace FbxAnimationPlayer.Samples
         {
             _fbxLoader.FbxAnimationLoaded -= OnFbxAnimationLoaded;
             _vrmLoader.ModelLoaded -= OnVrmModelLoaded;
+            _settingsPanel.FoVChanged -= OnFoVChanged;
+            _settingsPanel.ResetCameraRequested -= OnResetCameraRequested;
 
+            _settingsPanel.Dispose();
             _animationControlPanel.Dispose();
             _fbxLoader.Dispose();
             _vrmLoader.Dispose();
@@ -94,5 +105,16 @@ namespace FbxAnimationPlayer.Samples
                 _target = targetObject;
             }
         }
+
+        private void OnFoVChanged(float fov)
+        {
+            _orbitCameraController.SetFieldOfView(fov);
+        }
+
+        private void OnResetCameraRequested()
+        {
+            _orbitCameraController.ResetCamera();
+        }
+
     }
 }
