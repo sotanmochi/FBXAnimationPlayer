@@ -6,8 +6,10 @@ namespace FbxAnimationPlayer.Samples
 {
     public sealed class WebAppMessageBus : MonoBehaviour
     {
+#if UNITY_WEBGL && !UNITY_EDITOR
         [DllImport("__Internal")]
         private static extern void DispatchEvent(string type, string payloadJson);
+#endif
 
         public event Action<Message> MessageReceived;
 
