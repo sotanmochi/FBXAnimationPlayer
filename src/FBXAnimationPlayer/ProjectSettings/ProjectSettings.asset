@@ -823,7 +823,8 @@ PlayerSettings:
   webWasm2023: 0
   scriptingDefineSymbols:
     Standalone: 
-    WebGL: 
+    WebGL: UFBX_INTERNAL;UFBX_32_BITS
+    iPhone: 
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
