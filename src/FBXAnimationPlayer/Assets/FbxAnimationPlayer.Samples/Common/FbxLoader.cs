@@ -11,11 +11,16 @@ namespace FbxAnimationPlayer.Samples
     public sealed class FbxLoader : IDisposable
     {
         private readonly CancellationTokenSource _cancellationTokenSource = new();
-        private readonly IFilePicker _filePicker = FilePickerFactory.Create();
+        private readonly IFilePicker _filePicker;
 
         private Button _loadButton;
 
         public event Action<ImportResult> FbxAnimationLoaded;
+
+        public FbxLoader(IFilePickerFactory filePickerFactory)
+        {
+            _filePicker = filePickerFactory?.Create();
+        }
 
         public void Setup(VisualElement root)
         {
@@ -32,12 +37,16 @@ namespace FbxAnimationPlayer.Samples
 
         private void OpenFilePicker()
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            Debug.Log("<color=orange>File picker is not supported on WebGL</color>");
+#else
             _filePicker.PickFile("Open FBX File", new[] { "fbx" }, async path =>
             {
                 if (path == null) return;
                 await UniTask.SwitchToMainThread();
                 LoadFbxAnimation(path);
             });
+#endif
         }
 
         public void LoadFbxAnimation(string path)

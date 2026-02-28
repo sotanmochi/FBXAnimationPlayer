@@ -1,0 +1,19 @@
+{
+    "name": "FbxAnimationPlayer.Samples.Common",
+    "rootNamespace": "",
+    "references": [
+        "FbxAnimationPlayer",
+        "UniTask",
+        "VRM10",
+        "UniGLTF"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

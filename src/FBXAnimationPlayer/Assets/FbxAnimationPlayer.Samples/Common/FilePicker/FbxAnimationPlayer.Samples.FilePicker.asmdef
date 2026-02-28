@@ -1,12 +1,9 @@
 {
-    "name": "FbxAnimationPlayer.Samples",
+    "name": "FbxAnimationPlayer.Samples.FilePicker",
     "rootNamespace": "",
     "references": [
-        "FbxAnimationPlayer",
-        "UniTask",
+        "FbxAnimationPlayer.Samples.Common",
         "StandaloneFileBrowser",
-        "VRM10",
-        "UniGLTF",
         "NativeFilePicker.Runtime"
     ],
     "includePlatforms": [],

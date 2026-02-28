@@ -12,11 +12,16 @@ namespace FbxAnimationPlayer.Samples
     public sealed class VrmLoader : IDisposable
     {
         private readonly CancellationTokenSource _cancellationTokenSource = new();
-        private readonly IFilePicker _filePicker = FilePickerFactory.Create();
+        private readonly IFilePicker _filePicker;
 
         private Button _loadButton;
 
         public event Action<GameObject> ModelLoaded;
+
+        public VrmLoader(IFilePickerFactory filePickerFactory)
+        {
+            _filePicker = filePickerFactory?.Create();
+        }
 
         public void Setup(VisualElement root)
         {
@@ -33,12 +38,16 @@ namespace FbxAnimationPlayer.Samples
 
         private void OpenFilePicker()
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            Debug.Log("<color=orange>File picker is not supported on WebGL</color>");
+#else
             _filePicker.PickFile("Open VRM File", new[] { "vrm" }, async path =>
             {
                 if (path == null) return;
                 await UniTask.SwitchToMainThread();
                 LoadVrmModel(path);
             });
+#endif
         }
 
         public void LoadVrmModel(string path)
@@ -67,7 +76,12 @@ namespace FbxAnimationPlayer.Samples
                 return;
             }
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+            var instance = await Vrm10.LoadBytesAsync(bytes, canLoadVrm0X: true, showMeshes: true, ct: cancellationToken,
+                awaitCaller: new UniGLTF.RuntimeOnlyNoThreadAwaitCaller());
+#else
             var instance = await Vrm10.LoadBytesAsync(bytes, canLoadVrm0X: true, showMeshes: true, ct: cancellationToken);
+#endif
             if (instance == null)
             {
                 Debug.Log("<color=orange>Failed to parse VRM model</color>");
