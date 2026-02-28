@@ -183,9 +183,12 @@ namespace FbxAnimationPlayer.Samples
             _animController.OnTimeUpdatedAsObservable()
                 .Subscribe(currentTime =>
                 {
-                    var duration = _animController?.Duration ?? 0f;
-                    _messageBus.Emit("animation/timeUpdated",
-                        $"{{\"current\":{currentTime:F3},\"duration\":{duration:F3}}}");
+                    var payload = JsonUtility.ToJson(new TimeUpdatePayload
+                    {
+                        current = currentTime,
+                        duration = _animController?.Duration ?? 0f,
+                    });
+                    _messageBus.Emit("animation/timeUpdated", payload);
                 })
                 .AddTo(_animEventDisposables);
         }
@@ -275,9 +278,12 @@ namespace FbxAnimationPlayer.Samples
 
         private void OnAnimationTimeUpdated(float currentTime)
         {
-            var duration = _animController?.Duration ?? 0f;
-            _messageBus.Emit("animation/timeUpdated",
-                $"{{\"current\":{currentTime:F3},\"duration\":{duration:F3}}}");
+            var payload = JsonUtility.ToJson(new TimeUpdatePayload
+            {
+                current = currentTime,
+                duration = _animController?.Duration ?? 0f,
+            });
+            _messageBus.Emit("animation/timeUpdated", payload);
         }
 
 #endif

@@ -32,4 +32,11 @@ namespace FbxAnimationPlayer.Samples
     {
         public float speed;
     }
+
+    [Serializable]
+    public struct TimeUpdatePayload
+    {
+        public float current;
+        public float duration;
+    }
 }
