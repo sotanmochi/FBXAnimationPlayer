@@ -37,7 +37,9 @@ namespace FbxAnimationPlayer.Samples
 
         private void OpenFilePicker()
         {
-#if !UNITY_WEBGL
+#if UNITY_WEBGL && !UNITY_EDITOR
+            Debug.Log("<color=orange>File picker is not supported on WebGL</color>");
+#else
             _filePicker.PickFile("Open FBX File", new[] { "fbx" }, async path =>
             {
                 if (path == null) return;

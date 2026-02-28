@@ -38,7 +38,9 @@ namespace FbxAnimationPlayer.Samples
 
         private void OpenFilePicker()
         {
-#if !UNITY_WEBGL
+#if UNITY_WEBGL && !UNITY_EDITOR
+            Debug.Log("<color=orange>File picker is not supported on WebGL</color>");
+#else
             _filePicker.PickFile("Open VRM File", new[] { "vrm" }, async path =>
             {
                 if (path == null) return;
