@@ -89,7 +89,7 @@ function onSpeedChange(e: Event) {
 
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60)
-  const s = (seconds % 60).toFixed(1).padStart(4, '0')
+  const s = (seconds % 60).toFixed(2).padStart(5, '0')
   return `${m}:${s}`
 }
 </script>
