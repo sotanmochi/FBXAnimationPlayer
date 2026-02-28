@@ -8,6 +8,7 @@
         :vrm="vrm"
         :anim="anim"
       />
+      <ViewerSettings :settings="settings" />
     </header>
 
     <!-- Unity Web キャンバス（相対配置の親） -->
@@ -43,14 +44,16 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import UnityCanvas    from './components/UnityCanvas.vue'
-import FileLoader     from './components/FileLoader.vue'
-import AnimationPanel from './components/AnimationPanel.vue'
-import LoadingOverlay from './components/LoadingOverlay.vue'
+import UnityCanvas     from './components/UnityCanvas.vue'
+import FileLoader      from './components/FileLoader.vue'
+import AnimationPanel  from './components/AnimationPanel.vue'
+import LoadingOverlay  from './components/LoadingOverlay.vue'
+import ViewerSettings  from './components/ViewerSettings.vue'
 
 import { useUnityMessageBus }     from './composables/useUnityMessageBus'
 import { useVrmController }       from './composables/useVrmController'
 import { useAnimationController } from './composables/useAnimationController'
+import { useViewerSettings }      from './composables/useViewerSettings'
 
 import type { UnityInstance } from './types/unity'
 
@@ -71,9 +74,10 @@ const loadProgress = ref(0)
 const unityError   = ref<string | null>(null)
 
 // ── メッセージバス + 機能別 Composable ────────────────────────────────────
-const bus  = useUnityMessageBus()
-const vrm  = useVrmController(bus)
-const anim = useAnimationController(bus)
+const bus      = useUnityMessageBus()
+const vrm      = useVrmController(bus)
+const anim     = useAnimationController(bus)
+const settings = useViewerSettings(bus)
 
 // Unity 初期化完了通知を受け取る
 bus.on('app/ready', () => { isUnityReady.value = true })

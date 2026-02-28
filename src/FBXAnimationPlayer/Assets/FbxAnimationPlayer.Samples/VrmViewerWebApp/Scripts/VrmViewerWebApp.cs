@@ -11,6 +11,7 @@ namespace FbxAnimationPlayer.Samples
     public sealed class VrmViewerWebApp : MonoBehaviour
     {
         [SerializeField] private WebAppMessageBus _messageBus;
+        [SerializeField] private OrbitCameraController _orbitCameraController;
         [SerializeField] private string _defaultVrmModel = "VRM/AvatarSample_A.vrm";
         [SerializeField] private bool _autoPlayFbxAnimation = true;
 
@@ -21,6 +22,7 @@ namespace FbxAnimationPlayer.Samples
 
         private readonly VrmLoader _vrmLoader = new(filePickerFactory: null);
         private readonly FbxLoader _fbxLoader = new(filePickerFactory: null);
+        private readonly CameraBackgroundColorController _bgColorController = new();
 
         private FbxAnimationController _animController;
         private FbxMotionActor _motionActor;
@@ -55,6 +57,8 @@ namespace FbxAnimationPlayer.Samples
 
         private void Start()
         {
+            _bgColorController.SetCamera(Camera.main);
+
 #if FBXANIMPLAYER_R3_SUPPORT || FBXANIMPLAYER_UNIRX_SUPPORT
             SubscribeMessageBusEvents();
 #else
@@ -159,6 +163,19 @@ namespace FbxAnimationPlayer.Samples
             _messageBus.OnMessageReceivedAsObservable<SpeedPayload>("animation/setSpeed")
                 .Subscribe(p => { if (_animController != null) _animController.Speed = p.speed; })
                 .AddTo(_disposables);
+
+            _messageBus.OnMessageReceivedAsObservable<BackgroundColorPayload>("background/setColor")
+                .Subscribe(p => _bgColorController.SetColorFromRGB(p.r, p.g, p.b))
+                .AddTo(_disposables);
+
+            _messageBus.OnMessageReceivedAsObservable<FoVPayload>("camera/setFoV")
+                .Subscribe(p => { _orbitCameraController.SetFieldOfView(p.fov); })
+                .AddTo(_disposables);
+
+            _messageBus.OnMessageReceivedAsObservable()
+                .Where(m => m.type == "camera/reset")
+                .Subscribe(_ => { _orbitCameraController.ResetCamera(); })
+                .AddTo(_disposables);
         }
 
         private void SubscribeAnimationEvents()
@@ -240,6 +257,20 @@ namespace FbxAnimationPlayer.Samples
                 case "animation/setSpeed":
                     var speedPayload = DeserializePayload<SpeedPayload>(msg.payload);
                     if (_animController != null) _animController.Speed = speedPayload.speed;
+                    break;
+
+                case "background/setColor":
+                    var bgPayload = DeserializePayload<BackgroundColorPayload>(msg.payload);
+                    _bgColorController.SetColorFromRGB(bgPayload.r, bgPayload.g, bgPayload.b);
+                    break;
+
+                case "camera/setFoV":
+                    var fovPayload = DeserializePayload<FoVPayload>(msg.payload);
+                    _orbitCameraController.SetFieldOfView(fovPayload.fov);
+                    break;
+
+                case "camera/reset":
+                    _orbitCameraController.ResetCamera();
                     break;
             }
         }

@@ -39,4 +39,18 @@ namespace FbxAnimationPlayer.Samples
         public float current;
         public float duration;
     }
+
+    [Serializable]
+    public struct BackgroundColorPayload
+    {
+        public float r;
+        public float g;
+        public float b;
+    }
+
+    [Serializable]
+    public struct FoVPayload
+    {
+        public float fov;
+    }
 }

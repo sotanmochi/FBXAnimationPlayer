@@ -56,3 +56,35 @@
 .loop-toggle > .unity-label {
     font-size: 15px;
 }
+
+/* ── Settings (mobile overrides) ─────────────────────────────────── */
+
+.settings-button {
+    height: 52px;
+    width: 52px;
+    font-size: 22px;
+}
+
+.settings-panel {
+    width: 300px;
+    top: 70px;
+}
+
+.color-slider {
+    height: 36px;
+}
+
+.color-slider .unity-base-slider__dragger {
+    width: 20px;
+    height: 20px;
+    top: -8px;
+}
+
+.settings-toggle .unity-toggle__checkmark {
+    width: 28px;
+    height: 28px;
+}
+
+.settings-toggle > .unity-label {
+    font-size: 15px;
+}
