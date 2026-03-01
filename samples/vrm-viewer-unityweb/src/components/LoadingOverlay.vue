@@ -4,8 +4,8 @@
       <div class="content">
         <div class="spinner" />
         <p class="message">{{ message }}</p>
-        <div v-if="progress > 0" class="progress-bar">
-          <div class="progress-fill" :style="{ width: `${progress * 100}%` }" />
+        <div v-if="progress != null && progress > 0" class="progress-bar">
+          <div class="progress-fill" :style="{ width: `${progress! * 100}%` }" />
         </div>
       </div>
     </div>
