@@ -32,5 +32,5 @@ function unityBrotliPlugin(): Plugin {
 export default defineConfig(({ mode }) => ({
   plugins: [vue(), unityBrotliPlugin()],
   // GitHub Pages のサブパスに合わせる（本番ビルド時のみ適用）
-  base: mode === 'production' ? '/FBXAnimationPlayer/' : '/',
+  base: mode === 'production' ? '/FBXAnimationPlayer/vrm-viewer-unityweb/' : '/',
 }))
