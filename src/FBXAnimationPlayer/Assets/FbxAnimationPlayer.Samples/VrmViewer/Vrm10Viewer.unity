@@ -165,7 +165,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _uiDocument: {fileID: 1524829815}
   _orbitCameraController: {fileID: 1774203026}
-  _defaultVrmModel: VRM/AvatarSample_A.vrm
+  _defaultVrmModel: VRM/Sample_Alpha_PerfectSync.vrm
   _autoPlayFbxAnimation: 1
   _animationController: {fileID: 0}
   _motionActor: {fileID: 0}

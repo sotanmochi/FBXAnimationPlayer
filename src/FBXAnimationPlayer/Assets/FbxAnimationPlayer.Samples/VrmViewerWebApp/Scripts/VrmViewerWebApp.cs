@@ -12,7 +12,7 @@ namespace FbxAnimationPlayer.Samples
     {
         [SerializeField] private WebAppMessageBus _messageBus;
         [SerializeField] private OrbitCameraController _orbitCameraController;
-        [SerializeField] private string _defaultVrmModel = "VRM/AvatarSample_A.vrm";
+        [SerializeField] private string _defaultVrmModel = "VRM/Sample_Alpha_PerfectSync.vrm";
         [SerializeField] private bool _autoPlayFbxAnimation = true;
 
 #if FBXANIMPLAYER_R3_SUPPORT || FBXANIMPLAYER_UNIRX_SUPPORT
