@@ -254,6 +254,9 @@ namespace FbxAnimationPlayer
 
                 var synchronizer = skeleton.AddComponent<HumanBoneTransformSynchronizer>();
                 synchronizer.Setup(fbxBoneMap, skeletonBoneMap);
+
+                var visualizer = skeleton.AddComponent<SkeletonVisualizer>();
+                visualizer.Enabled = false;
             }
 
             return new ImportResult()
