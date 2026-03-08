@@ -70,11 +70,11 @@ namespace FbxAnimationPlayer
 
         private void SynchronizeBoneTransform()
         {
-            // Synchronize world position and rotation of hips
+            // Synchronize local position and rotation of hips
             if (_sourceHips != null && _targetHips != null)
             {
-                _targetHips.position = _sourceHips.position;
-                _targetHips.rotation = _sourceHips.rotation;
+                _targetHips.localPosition = _sourceHips.localPosition;
+                _targetHips.localRotation = _sourceHips.localRotation;
             }
 
             // Synchronize local rotation of other bones
