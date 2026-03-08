@@ -15,6 +15,8 @@ namespace FbxAnimationPlayer.Samples
 
         private Button _loadButton;
 
+        public BoneNameMappingConfig BoneNameMappingConfig { get; set; }
+
         public event Action<ImportResult> FbxAnimationLoaded;
 
         public FbxLoader(IFilePickerFactory filePickerFactory)
@@ -75,7 +77,7 @@ namespace FbxAnimationPlayer.Samples
                 return;
             }
 
-            var importResult = await FbxAnimationImporter.LoadAsync(new MemoryStream(bytes), cancellationToken);
+            var importResult = await FbxAnimationImporter.LoadAsync(new MemoryStream(bytes), cancellationToken, boneNameMappingConfig: BoneNameMappingConfig);
             if (!importResult.IsSuccess)
             {
                 Debug.Log($"<color=orange>Failed to import FBX animation: {importResult.ErrorMessage}</color>");

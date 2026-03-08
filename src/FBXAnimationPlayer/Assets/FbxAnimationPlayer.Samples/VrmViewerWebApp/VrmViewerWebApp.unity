@@ -502,6 +502,7 @@ MonoBehaviour:
   _orbitCameraController: {fileID: 1202825192}
   _defaultVrmModel: VRM/Sample_Alpha_PerfectSync.vrm
   _autoPlayFbxAnimation: 1
+  _boneNameMappingConfigJson: {fileID: 4900000, guid: f1a8733e00c934b51ae13730b19e4cd5, type: 3}
 --- !u!4 &1745299641
 Transform:
   m_ObjectHideFlags: 0

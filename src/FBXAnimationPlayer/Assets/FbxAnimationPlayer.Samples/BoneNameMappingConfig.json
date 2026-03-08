@@ -1,0 +1,7 @@
+{
+    "mode": "Additive",
+    "prefixesToStrip": [
+        "bone:"
+    ],
+    "bones": []
+}

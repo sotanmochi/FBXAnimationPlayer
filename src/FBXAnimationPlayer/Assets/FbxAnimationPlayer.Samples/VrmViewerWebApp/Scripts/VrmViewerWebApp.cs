@@ -14,6 +14,7 @@ namespace FbxAnimationPlayer.Samples
         [SerializeField] private OrbitCameraController _orbitCameraController;
         [SerializeField] private string _defaultVrmModel = "VRM/Sample_Alpha_PerfectSync.vrm";
         [SerializeField] private bool _autoPlayFbxAnimation = true;
+        [SerializeField] private TextAsset _boneNameMappingConfigJson;
 
 #if FBXANIMPLAYER_R3_SUPPORT || FBXANIMPLAYER_UNIRX_SUPPORT
         private readonly CompositeDisposable _disposables = new();
@@ -58,6 +59,11 @@ namespace FbxAnimationPlayer.Samples
         private void Start()
         {
             _bgColorController.SetCamera(Camera.main);
+
+            if (_boneNameMappingConfigJson != null)
+            {
+                _fbxLoader.BoneNameMappingConfig = BoneNameMappingConfigJsonSerializer.Deserialize(_boneNameMappingConfigJson.text);
+            }
 
 #if FBXANIMPLAYER_R3_SUPPORT || FBXANIMPLAYER_UNIRX_SUPPORT
             SubscribeMessageBusEvents();
