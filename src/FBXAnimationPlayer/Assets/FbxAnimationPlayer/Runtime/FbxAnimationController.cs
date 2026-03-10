@@ -71,10 +71,13 @@ namespace FbxAnimationPlayer
 
         public void Setup(GameObject fbxRootObject, List<AnimationClip> clips)
         {
+            var lastClipIndex = clips != null && clips.Count > 0 ? clips.Count - 1 : 0;
+
             _fbxRootObject = fbxRootObject;
             _clips = clips;
-            _currentClipIndex = 0;
+            _currentClipIndex = lastClipIndex;
             _currentTime = 0f;
+
             SetState(AnimationPlayState.Stopped);
         }
 

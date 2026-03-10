@@ -6,15 +6,33 @@ namespace FbxAnimationPlayer
     public static class HumanAvatarSkeletonUtility
     {
         /// <summary>
-        /// Create a mapping of HumanBodyBones and Transforms.
-        /// HumanBodyBonesとTransformのマッピングを作成する。
+        /// Create a mapping of HumanBodyBones and Transforms using built-in name patterns.
+        /// 組み込みの名前パターンを使用して、HumanBodyBonesとTransformのマッピングを作成する。
         /// </summary>
         public static Dictionary<HumanBodyBones, Transform> CreateBoneTransformMap(GameObject skeletonRoot)
+        {
+            return CreateBoneTransformMap(skeletonRoot, null, null);
+        }
+
+        /// <summary>
+        /// Create a mapping of HumanBodyBones and Transforms using custom prefixes and bone name patterns.
+        /// カスタムのプレフィックスとボーン名パターンを使用して、HumanBodyBonesとTransformのマッピングを作成する。
+        /// </summary>
+        /// <param name="skeletonRoot">The root GameObject of the skeleton.</param>
+        /// <param name="customPrefixesToStrip">Prefixes to strip from bone names. If null, built-in defaults are used.</param>
+        /// <param name="customBoneNamePatterns">Bone name patterns for matching. If null, built-in defaults are used.</param>
+        public static Dictionary<HumanBodyBones, Transform> CreateBoneTransformMap(
+            GameObject skeletonRoot,
+            string[] customPrefixesToStrip,
+            List<(HumanBodyBones bone, string[] namePatterns)> customBoneNamePatterns)
         {
             if (skeletonRoot == null)
             {
                 return new Dictionary<HumanBodyBones, Transform>();
             }
+
+            var prefixesToStrip = customPrefixesToStrip ?? DefaultPrefixesToStrip;
+            var boneNamePatterns = customBoneNamePatterns ?? DefaultBoneNamePatterns;
 
             var boneTransformMap = new Dictionary<HumanBodyBones, Transform>();
             var mappedTransforms = new HashSet<Transform>();
@@ -27,15 +45,19 @@ namespace FbxAnimationPlayer
                     continue;
                 }
 
-                var normalizedName = transform.name
-                                        .ToLowerInvariant()
-                                        .Replace(" ", "")
-                                        .Replace("_", "")
-                                        .Replace("-", "")
-                                        .Replace(".", "")
-                                        .Replace(":", "");
+                // Remove prefixes and convert to lowercase
+                // ボーン名を小文字に変換してプレフィックスを除去する
+                var transformName = transform.name.ToLowerInvariant();
+                foreach (var prefix in prefixesToStrip)
+                {
+                    if (transformName.StartsWith(prefix))
+                    {
+                        transformName = transformName.Substring(prefix.Length);
+                        break;
+                    }
+                }
 
-                foreach (var (bone, namePatterns) in BoneNamePatterns)
+                foreach (var (bone, namePatterns) in boneNamePatterns)
                 {
                     if (boneTransformMap.ContainsKey(bone))
                     {
@@ -44,7 +66,7 @@ namespace FbxAnimationPlayer
 
                     foreach (var namePattern in namePatterns)
                     {
-                        if (normalizedName == namePattern || normalizedName.Contains(namePattern))
+                        if (transformName.StartsWith(namePattern))
                         {
                             boneTransformMap[bone] = transform;
                             mappedTransforms.Add(transform);
@@ -496,19 +518,29 @@ namespace FbxAnimationPlayer
             { HumanBodyBones.RightLittleDistal, Vector3.right },
         };
 
-        private static readonly List<(HumanBodyBones bone, string[] namePatterns)> BoneNamePatterns = new()
+        public static readonly string[] DefaultPrefixesToStrip = new[]
         {
+            "mixamorig:",   // Mixamo (e.g., "mixamorig:LeftArm")
+        };
+
+        public static readonly List<(HumanBodyBones bone, string[] namePatterns)> DefaultBoneNamePatterns = new()
+        {
+            // === Body ===
             (HumanBodyBones.Hips, new[] {
-                "hips",  "hip", "pelvis",
+                "hips", "hip", "pelvis",
             }),
             (HumanBodyBones.Spine, new[] {
-                "spine", "spine0", "spine1", "spine01",
+                "spine", "spine0", "spine1", "spine01", "spine_01",
             }),
             (HumanBodyBones.Chest, new[] {
-                "chest", "spine1", "spine01", "spine2", "spine02",
+                "chest",
+                "spine1", "spine01", "spine_01",
+                "spine2", "spine02", "spine_02",
             }),
             (HumanBodyBones.UpperChest, new[] {
-                "upperchest", "spine2", "spine02", "spine3", "spine03",
+                "upperchest", "upper_chest",
+                "spine2", "spine02", "spine_02",
+                "spine3", "spine03", "spine_03",
             }),
             (HumanBodyBones.Neck, new[] {
                 "neck",
@@ -519,152 +551,249 @@ namespace FbxAnimationPlayer
 
             // === Left Arm ===
             (HumanBodyBones.LeftShoulder, new[] {
-                "leftshoulder", "shoulderleft",
+                "leftshoulder", "left_shoulder",
+                "shoulder_left", "shoulder_l", "shoulder.l",
             }),
             (HumanBodyBones.LeftUpperArm, new[] {
-                "leftupperarm", "leftarm", "armleft",
+                "leftupperarm", "left_upper_arm", "left_upperarm",
+                "leftarm",
+                "arm_left", "arm_l", "arm.l",
+                "upperarm_l", "upperarm.l",
             }),
             (HumanBodyBones.LeftLowerArm, new[] {
-                "leftlowerarm", "leftforearm", "forearmleft",
+                "leftlowerarm", "left_lower_arm", "left_lowerarm",
+                "leftforearm",
+                "forearm_left", "forearm_l", "forearm.l",
+                "lowerarm_l", "lowerarm.l",
             }),
             (HumanBodyBones.LeftHand, new[] {
-                "lefthand", "handleft"
+                "lefthand", "left_hand",
+                "hand_left", "hand_l", "hand.l",
             }),
 
             // === Right Arm ===
             (HumanBodyBones.RightShoulder, new[] {
-                "rightshoulder", "shoulderright",
+                "rightshoulder", "right_shoulder",
+                "shoulder_right", "shoulder_r", "shoulder.r",
             }),
             (HumanBodyBones.RightUpperArm, new[] {
-                "rightupperarm", "rightarm", "armright",
+                "rightupperarm", "right_upper_arm", "right_upperarm",
+                "rightarm",
+                "arm_right", "arm_r", "arm.r",
+                "upperarm_r", "upperarm.r",
             }),
             (HumanBodyBones.RightLowerArm, new[] {
-                "rightlowerarm", "rightforearm", "forearmright",
+                "rightlowerarm", "right_lower_arm", "right_lowerarm",
+                "rightforearm",
+                "forearm_right", "forearm_r", "forearm.r",
+                "lowerarm_r", "lowerarm.r",
             }),
             (HumanBodyBones.RightHand, new[] {
-                "righthand", "handright"
+                "righthand", "right_hand",
+                "hand_right", "hand_r", "hand.r",
             }),
 
             // === Left Leg ===
             (HumanBodyBones.LeftUpperLeg, new[] {
-                "leftupperleg", "leftupleg", "uplegleft",
+                "leftupperleg", "left_upper_leg", "left_upperleg",
+                "leftupleg",
+                "upleg_left", "upleg_l", "upleg.l",
+                "upperleg_l", "upperleg.l",
             }),
             (HumanBodyBones.LeftLowerLeg, new[] {
-                "leftlowerleg", "leftleg", "legleft",
+                "leftlowerleg", "left_lower_leg", "left_lowerleg",
+                "leftleg",
+                "leg_left", "leg_l", "leg.l",
+                "lowerleg_l", "lowerleg.l",
             }),
             (HumanBodyBones.LeftFoot, new[] {
-                "leftfoot", "footleft",
+                "leftfoot", "left_foot",
+                "foot_left", "foot_l", "foot.l",
             }),
             (HumanBodyBones.LeftToes, new[] {
-                "lefttoes", "lefttoebase", "toesleft",
+                "lefttoebase", "left_toebase", "left_toe_base",
+                "lefttoes", "left_toes",
+                "toebase_left", "toes_left",
+                "toebase_l", "toes_l", "toes.l",
             }),
 
             // === Right Leg ===
             (HumanBodyBones.RightUpperLeg, new[] {
-                "rightupperleg", "rightupleg", "uplegright",
+                "rightupperleg", "right_upper_leg", "right_upperleg",
+                "rightupleg",
+                "upleg_right", "upleg_r", "upleg.r",
+                "upperleg_r", "upperleg.r",
             }),
             (HumanBodyBones.RightLowerLeg, new[] {
-                "rightlowerleg", "rightleg", "legright",
+                "rightlowerleg", "right_lower_leg", "right_lowerleg",
+                "rightleg",
+                "leg_right", "leg_r", "leg.r",
+                "lowerleg_r", "lowerleg.r",
             }),
             (HumanBodyBones.RightFoot, new[] {
-                "rightfoot", "footright",
+                "rightfoot", "right_foot",
+                "foot_right", "foot_r", "foot.r",
             }),
             (HumanBodyBones.RightToes, new[] {
-                "righttoes", "righttoebase", "toesright",
+                "righttoebase", "right_toebase", "right_toe_base",
+                "righttoes", "right_toes",
+                "toebase_right", "toes_right",
+                "toebase_r", "toes_r", "toes.r",
             }),
 
             // === Left Hand Fingers ===
             (HumanBodyBones.LeftThumbProximal, new[] {
-                "lefthandthumb1", "thumbfinger0left"
+                "lefthandthumb1",
+                "thumbfinger0_left",
+                "thumb1_l", "thumb1.l",
             }),
             (HumanBodyBones.LeftThumbIntermediate, new[] {
-                "lefthandthumb2", "thumbfinger1left"
+                "lefthandthumb2",
+                "thumbfinger1_left",
+                "thumb2_l", "thumb2.l",
+                "fingerth1_l",
             }),
             (HumanBodyBones.LeftThumbDistal, new[] {
-                "lefthandthumb3", "thumbfinger2left"
+                "lefthandthumb3",
+                "thumbfinger2_left",
+                "thumb3_l", "thumb3.l",
             }),
             (HumanBodyBones.LeftIndexProximal, new[] {
-                "lefthandindex1", "indexfinger1left",
-            }), 
+                "lefthandindex1",
+                "indexfinger1_left",
+                "index1_l", "index1.l",
+            }),
             (HumanBodyBones.LeftIndexIntermediate, new[] {
-                "lefthandindex2", "indexfinger2left",
+                "lefthandindex2",
+                "indexfinger2_left",
+                "index2_l", "index2.l",
             }),
             (HumanBodyBones.LeftIndexDistal, new[] {
-                "lefthandindex3", "indexfinger3left",
+                "lefthandindex3",
+                "indexfinger3_left",
+                "index3_l", "index3.l",
             }),
             (HumanBodyBones.LeftMiddleProximal, new[] {
-                "lefthandmiddle1", "middlefinger1left",
+                "lefthandmiddle1",
+                "middlefinger1_left",
+                "middle1_l", "middle1.l",
             }),
             (HumanBodyBones.LeftMiddleIntermediate, new[] {
-                "lefthandmiddle2", "middlefinger2left",
+                "lefthandmiddle2",
+                "middlefinger2_left",
+                "middle2_l", "middle2.l",
             }),
             (HumanBodyBones.LeftMiddleDistal, new[] {
-                "lefthandmiddle3", "middlefinger3left",
+                "lefthandmiddle3",
+                "middlefinger3_left",
+                "middle3_l", "middle3.l",
             }),
             (HumanBodyBones.LeftRingProximal, new[] {
-                "lefthandring1", "ringfinger1left"
+                "lefthandring1",
+                "ringfinger1_left",
+                "ring1_l", "ring1.l",
             }),
             (HumanBodyBones.LeftRingIntermediate, new[] {
-                "lefthandring2", "ringfinger2left"
+                "lefthandring2",
+                "ringfinger2_left",
+                "ring2_l", "ring2.l",
             }),
             (HumanBodyBones.LeftRingDistal, new[] {
-                "lefthandring3", "ringfinger3left"
+                "lefthandring3",
+                "ringfinger3_left",
+                "ring3_l", "ring3.l",
             }),
             (HumanBodyBones.LeftLittleProximal, new[] {
-                "lefthandpinky1", "pinkyfinger1left",
+                "lefthandpinky1",
+                "pinkyfinger1_left",
+                "pinky1_l", "pinky1.l",
             }),
             (HumanBodyBones.LeftLittleIntermediate, new[] {
-                "lefthandpinky2", "pinkyfinger2left",
+                "lefthandpinky2",
+                "pinkyfinger2_left",
+                "pinky2_l", "pinky2.l",
             }),
             (HumanBodyBones.LeftLittleDistal, new[] {
-                "lefthandpinky3", "pinkyfinger3left",
+                "lefthandpinky3",
+                "pinkyfinger3_left",
+                "pinky3_l", "pinky3.l",
             }),
 
             // === Right Hand Fingers ===
             (HumanBodyBones.RightThumbProximal, new[] {
-                "righthandthumb1", "thumbfinger0right",
+                "righthandthumb1",
+                "thumbfinger0_right",
+                "thumb1_r", "thumb1.r",
             }),
             (HumanBodyBones.RightThumbIntermediate, new[] {
-                "righthandthumb2", "thumbfinger1right",
+                "righthandthumb2",
+                "thumbfinger1_right",
+                "thumb2_r", "thumb2.r",
             }),
             (HumanBodyBones.RightThumbDistal, new[] {
-                "righthandthumb3", "thumbfinger2right",
+                "righthandthumb3",
+                "thumbfinger2_right",
+                "thumb3_r", "thumb3.r",
             }),
             (HumanBodyBones.RightIndexProximal, new[] {
-                "righthandindex1", "indexfinger1right",
+                "righthandindex1",
+                "indexfinger1_right",
+                "index1_r", "index1.r",
             }),
             (HumanBodyBones.RightIndexIntermediate, new[] {
-                "righthandindex2", "indexfinger2right",
+                "righthandindex2",
+                "indexfinger2_right",
+                "index2_r", "index2.r",
             }),
             (HumanBodyBones.RightIndexDistal, new[] {
-                "righthandindex3", "indexfinger3right",
+                "righthandindex3",
+                "indexfinger3_right",
+                "index3_r", "index3.r",
             }),
             (HumanBodyBones.RightMiddleProximal, new[] {
-                "righthandmiddle1", "middlefinger1right",
+                "righthandmiddle1",
+                "middlefinger1_right",
+                "middle1_r", "middle1.r",
             }),
             (HumanBodyBones.RightMiddleIntermediate, new[] {
-                "righthandmiddle2", "middlefinger2right",
+                "righthandmiddle2",
+                "middlefinger2_right",
+                "middle2_r", "middle2.r",
             }),
             (HumanBodyBones.RightMiddleDistal, new[] {
-                "righthandmiddle3", "middlefinger3right",
+                "righthandmiddle3",
+                "middlefinger3_right",
+                "middle3_r", "middle3.r",
             }),
             (HumanBodyBones.RightRingProximal, new[] {
-                "righthandring1", "ringfinger1right",
+                "righthandring1",
+                "ringfinger1_right",
+                "ring1_r", "ring1.r",
             }),
             (HumanBodyBones.RightRingIntermediate, new[] {
-                "righthandring2", "ringfinger2right",
+                "righthandring2",
+                "ringfinger2_right",
+                "ring2_r", "ring2.r",
             }),
             (HumanBodyBones.RightRingDistal, new[] {
-                "righthandring3", "ringfinger3right",
+                "righthandring3",
+                "ringfinger3_right",
+                "ring3_r", "ring3.r",
             }),
             (HumanBodyBones.RightLittleProximal, new[] {
-                "righthandpinky1", "pinkyfinger1right",
+                "righthandpinky1",
+                "pinkyfinger1_right",
+                "pinky1_r", "pinky1.r",
             }),
             (HumanBodyBones.RightLittleIntermediate, new[] {
-                "righthandpinky2", "pinkyfinger2right",
+                "righthandpinky2",
+                "pinkyfinger2_right",
+                "pinky2_r", "pinky2.r",
             }),
             (HumanBodyBones.RightLittleDistal, new[] {
-                "righthandpinky3", "pinkyfinger3right",
+                "righthandpinky3",
+                "pinkyfinger3_right",
+                "pinky3_r", "pinky3.r",
             }),
         };
     }

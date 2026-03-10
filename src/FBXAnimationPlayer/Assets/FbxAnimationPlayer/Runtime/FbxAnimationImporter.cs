@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using FBXImporter;
@@ -21,7 +22,8 @@ namespace FbxAnimationPlayer
     public static class FbxAnimationImporter
     {
         public static async UniTask<ImportResult> LoadAsync(
-            Stream stream, CancellationToken cancellationToken, IProgress<float> progress = null)
+            Stream stream, CancellationToken cancellationToken, IProgress<float> progress = null,
+            BoneNameMappingConfig boneNameMappingConfig = null)
         {
             try
             {
@@ -44,7 +46,7 @@ namespace FbxAnimationPlayer
                     };
                 }
 
-                return CreateAnimationImportResult(result);
+                return CreateAnimationImportResult(result, boneNameMappingConfig);
             }
             catch (OperationCanceledException)
             {
@@ -63,7 +65,8 @@ namespace FbxAnimationPlayer
         }
 
         public static async UniTask<ImportResult> LoadAsync(
-            string filePath, CancellationToken cancellationToken, IProgress<float> progress = null)
+            string filePath, CancellationToken cancellationToken, IProgress<float> progress = null,
+            BoneNameMappingConfig boneNameMappingConfig = null)
         {
             try
             {
@@ -86,7 +89,7 @@ namespace FbxAnimationPlayer
                     };
                 }
 
-                return CreateAnimationImportResult(result);
+                return CreateAnimationImportResult(result, boneNameMappingConfig);
             }
             catch (OperationCanceledException)
             {
@@ -190,7 +193,9 @@ namespace FbxAnimationPlayer
             return importResult;
         }
 
-        private static ImportResult CreateAnimationImportResult(FBXImporter.Importer.ImportResult fbxImportResult)
+        private static ImportResult CreateAnimationImportResult(
+            FBXImporter.Importer.ImportResult fbxImportResult,
+            BoneNameMappingConfig boneNameMappingConfig = null)
         {
             var fbxResultRootObject = fbxImportResult.GameObject;
             if (fbxResultRootObject == null)
@@ -242,7 +247,8 @@ namespace FbxAnimationPlayer
                 fbxResultRootObject,
                 animationClips[0],
                 out var fbxBoneMap,
-                out var skeletonBoneMap);
+                out var skeletonBoneMap,
+                boneNameMappingConfig);
 
             if (skeleton != null)
             {
@@ -254,6 +260,9 @@ namespace FbxAnimationPlayer
 
                 var synchronizer = skeleton.AddComponent<HumanBoneTransformSynchronizer>();
                 synchronizer.Setup(fbxBoneMap, skeletonBoneMap);
+
+                var visualizer = skeleton.AddComponent<SkeletonVisualizer>();
+                visualizer.Enabled = false;
             }
 
             return new ImportResult()
@@ -292,13 +301,19 @@ namespace FbxAnimationPlayer
             GameObject fbxRootObject,
             AnimationClip animationClip,
             out Dictionary<HumanBodyBones, Transform> fbxBoneMap,
-            out Dictionary<HumanBodyBones, Transform> skeletonBoneMap)
+            out Dictionary<HumanBodyBones, Transform> skeletonBoneMap,
+            BoneNameMappingConfig boneNameMappingConfig = null)
         {
             // Sample the first frame to get the localPosition of each bone.
-            // 各ボーンのlocalPositionを取得するため、最初のフレームをサンプリングする。
+            // 各ボーンの localPosition を取得するため、最初のフレームをサンプリングする。
             animationClip.SampleAnimation(fbxRootObject, 0f);
 
-            fbxBoneMap = HumanAvatarSkeletonUtility.CreateBoneTransformMap(fbxRootObject);
+            ResolveBoneNameMappingConfig(
+                boneNameMappingConfig,
+                out var prefixesToStrip,
+                out var boneNamePatterns);
+
+            fbxBoneMap = HumanAvatarSkeletonUtility.CreateBoneTransformMap(fbxRootObject, prefixesToStrip, boneNamePatterns);
             skeletonBoneMap = null;
 
             var skeleton = new GameObject("HumanAvatarSkeleton");
@@ -315,6 +330,50 @@ namespace FbxAnimationPlayer
             }
 
             return skeleton;
+        }
+
+        private static void ResolveBoneNameMappingConfig(
+            BoneNameMappingConfig config,
+            out string[] prefixesToStrip,
+            out List<(HumanBodyBones bone, string[] namePatterns)> boneNamePatterns)
+        {
+            if (config == null)
+            {
+                prefixesToStrip = null;
+                boneNamePatterns = null;
+                return;
+            }
+
+            if (config.Mode == BoneNameMappingMode.Additive)
+            {
+                var configPrefixes = config.PrefixesToStrip ?? Array.Empty<string>();
+                prefixesToStrip = configPrefixes.Length > 0
+                    ? configPrefixes.Concat(HumanAvatarSkeletonUtility.DefaultPrefixesToStrip).ToArray()
+                    : null;
+
+                if (config.BoneNamePatterns != null && config.BoneNamePatterns.Count > 0)
+                {
+                    var merged = HumanAvatarSkeletonUtility.DefaultBoneNamePatterns
+                        .ToDictionary(x => x.bone, x => x.namePatterns);
+                    foreach (var (bone, configPatterns) in config.BoneNamePatterns)
+                    {
+                        merged[bone] = merged.TryGetValue(bone, out var defaultPatterns)
+                            ? configPatterns.Concat(defaultPatterns).ToArray()
+                            : configPatterns;
+                    }
+                    boneNamePatterns = merged.Select(kv => (bone: kv.Key, namePatterns: kv.Value)).ToList();
+                }
+                else
+                {
+                    boneNamePatterns = null;
+                }
+            }
+            else
+            {
+                // Override
+                prefixesToStrip = config.PrefixesToStrip;
+                boneNamePatterns = config.BoneNamePatterns?.Select(kv => (bone: kv.Key, namePatterns: kv.Value)).ToList();
+            }
         }
 
         private static void CloneSkeletonHierarchy(
