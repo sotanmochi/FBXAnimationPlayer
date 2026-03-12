@@ -15,6 +15,8 @@ You can install via Package Manager in UnityEditor.
 2. Click the + button and select "Add package from git URL"
 3. Enter: `https://github.com/sotanmochi/FBXAnimationPlayer.git?path=src/FBXAnimationPlayer/Assets/FbxAnimationPlayer#0.2.0`
 
+<img src="./Docs~/PackageManager.png" height="480">
+
 You can also install via editing Packages/manifest.json directly.
 ```
 // Packages/manifest.json
