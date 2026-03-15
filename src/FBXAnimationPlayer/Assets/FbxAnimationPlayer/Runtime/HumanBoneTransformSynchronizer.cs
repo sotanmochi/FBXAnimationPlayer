@@ -13,6 +13,8 @@ namespace FbxAnimationPlayer
         [ReadOnly, SerializeField]
         private Transform _targetHips;
 
+        private Quaternion _hipsParentRotationOffset;
+
         [ReadOnly, NonReorderable, SerializeField]
         private List<Transform> _sourceBones = new(BoneCount);
 
@@ -49,6 +51,14 @@ namespace FbxAnimationPlayer
             _sourceHips = sourceBones.GetValueOrDefault(HumanBodyBones.Hips);
             _targetHips = targetBones.GetValueOrDefault(HumanBodyBones.Hips);
 
+            var sourceParentRotation = _sourceHips?.parent != null
+                ? _sourceHips.parent.rotation
+                : Quaternion.identity;
+            var targetParentRotation = _targetHips?.parent != null
+                ? _targetHips.parent.rotation
+                : Quaternion.identity;
+            _hipsParentRotationOffset = Quaternion.Inverse(targetParentRotation) * sourceParentRotation;
+
             for (var boneId = 0; boneId < BoneCount; boneId++)
             {
                 _sourceBones[boneId] = sourceBones.GetValueOrDefault((HumanBodyBones)boneId);
@@ -73,8 +83,8 @@ namespace FbxAnimationPlayer
             // Synchronize local position and rotation of hips
             if (_sourceHips != null && _targetHips != null)
             {
-                _targetHips.localPosition = _sourceHips.localPosition;
-                _targetHips.localRotation = _sourceHips.localRotation;
+                _targetHips.localPosition = _hipsParentRotationOffset * _sourceHips.localPosition;
+                _targetHips.localRotation = _hipsParentRotationOffset * _sourceHips.localRotation;
             }
 
             // Synchronize local rotation of other bones
