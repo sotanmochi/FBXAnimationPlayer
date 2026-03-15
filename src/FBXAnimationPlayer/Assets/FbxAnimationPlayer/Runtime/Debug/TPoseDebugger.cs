@@ -24,6 +24,7 @@ namespace FbxAnimationPlayer
         public IReadOnlyList<TPoseStepSnapshot> Snapshots => _executor?.Snapshots;
         public bool IsLoaded => _executor != null && _skeletonBoneMap != null;
 
+        public string LoadedFileName { get; private set; }
         public BoneNameMappingConfig BoneNameMappingConfig { get; set; }
 
         void OnDestroy()
@@ -71,6 +72,7 @@ namespace FbxAnimationPlayer
 
         public async UniTask LoadForDebug(string filePath, CancellationToken ct)
         {
+            LoadedFileName = Path.GetFileName(filePath);
             byte[] bytes = await File.ReadAllBytesAsync(filePath, ct);
             await LoadForDebug(new MemoryStream(bytes), ct);
         }

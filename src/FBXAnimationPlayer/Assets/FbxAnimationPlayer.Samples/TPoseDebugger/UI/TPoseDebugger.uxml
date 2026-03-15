@@ -1,0 +1,53 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+  <Style src="TPoseDebugger.uss" />
+
+  <!-- Right Side Panel -->
+  <ui:VisualElement name="right-panel" class="right-panel">
+    <ui:VisualElement class="toolbar">
+      <ui:Button name="load-fbx-button" text="Load FBX" class="toolbar-button" />
+      <ui:Button name="reset-camera-button" text="Reset Camera" class="toolbar-button" />
+    </ui:VisualElement>
+    <ui:Label name="label-filename" text="(no file loaded)" class="filename-label" />
+    <ui:ScrollView name="right-panel-scroll" class="right-panel-scroll">
+
+      <!-- Step Info -->
+      <ui:Foldout name="foldout-step-info" text="Step Info" value="true" class="panel">
+        <ui:VisualElement name="step-info-content" class="info-grid">
+          <ui:Label name="label-parent" text="Parent: -" />
+          <ui:Label name="label-child" text="Child: -" />
+          <ui:Label name="label-current-dir" text="Current Dir: -" />
+          <ui:Label name="label-expected-dir" text="Expected Dir: -" />
+          <ui:Label name="label-dot" text="Dot Product: -" />
+          <ui:Label name="label-correction" text="Correction: -" />
+          <ui:Label name="label-status" text="Status: -" />
+        </ui:VisualElement>
+      </ui:Foldout>
+
+      <!-- Display Options -->
+      <ui:Foldout name="foldout-display" text="Display Options" value="false" class="panel">
+        <ui:Toggle name="toggle-fbx-skeleton" text="FBX Original Skeleton" value="false" />
+        <ui:Toggle name="toggle-axes" text="Local Axes" value="true" />
+      </ui:Foldout>
+
+      <!-- Bone Map -->
+      <ui:Foldout name="foldout-bone-map" text="Bone Map" value="false" class="panel">
+        <ui:VisualElement name="bone-map-list" class="bone-map-container" />
+      </ui:Foldout>
+
+    </ui:ScrollView>
+  </ui:VisualElement>
+
+  <!-- Bottom Navigation Bar -->
+  <ui:VisualElement name="bottom-bar" class="bottom-bar">
+    <ui:VisualElement name="step-navigation" class="navigation-bar">
+      <ui:Button name="reset-button" text="Reset" class="nav-button" />
+      <ui:Button name="prev-button" text="Prev" class="nav-button" />
+      <ui:Button name="next-button" text="Next" class="nav-button" />
+      <ui:Label name="label-step" text="Step 0 / 0" class="step-label" />
+      <ui:Slider name="slider-step" low-value="0" high-value="1" class="step-slider" />
+      <ui:Button name="run-all-button" text="Run All" class="nav-button" />
+    </ui:VisualElement>
+    <ui:Label name="label-step-name" text="(not loaded)" class="step-name" />
+  </ui:VisualElement>
+
+</ui:UXML>
