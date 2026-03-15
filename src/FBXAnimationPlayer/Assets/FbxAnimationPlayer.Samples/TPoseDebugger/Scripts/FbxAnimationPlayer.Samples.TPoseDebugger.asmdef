@@ -1,0 +1,19 @@
+{
+    "name": "FbxAnimationPlayer.Samples.TPoseDebugger",
+    "rootNamespace": "",
+    "references": [
+        "FbxAnimationPlayer",
+        "FbxAnimationPlayer.Samples.Common",
+        "FbxAnimationPlayer.Samples.FilePicker",
+        "UniTask"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

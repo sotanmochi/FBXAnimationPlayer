@@ -1,0 +1,137 @@
+/* ===== Right Side Panel ===== */
+.right-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 64px;
+    width: 280px;
+    background-color: rgba(20, 20, 20, 0.85);
+    padding: 8px;
+    flex-direction: column;
+    color: white;
+}
+
+.right-panel-scroll {
+    flex-grow: 1;
+}
+
+.toolbar {
+    flex-direction: row;
+    flex-shrink: 0;
+    margin-bottom: 6px;
+}
+
+.toolbar-button {
+    height: 24px;
+    flex-grow: 1;
+    font-size: 11px;
+    margin: 0 2px;
+    color: initial;
+}
+
+.filename-label {
+    font-size: 11px;
+    color: rgb(180, 180, 180);
+    margin: 0 0 4px 0;
+    flex-shrink: 0;
+    white-space: normal;
+    overflow: hidden;
+}
+
+/* ===== Bottom Navigation Bar ===== */
+.bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background-color: rgba(20, 20, 20, 0.85);
+    padding: 4px 8px;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.navigation-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+}
+
+.nav-button {
+    min-width: 50px;
+    height: 28px;
+    margin: 0 4px;
+    font-size: 12px;
+}
+
+.step-label {
+    min-width: 90px;
+    -unity-text-align: middle-center;
+    color: white;
+    font-size: 13px;
+    margin: 0 6px;
+}
+
+.step-slider {
+    flex-grow: 1;
+    min-width: 100px;
+    margin: 0 6px;
+}
+
+.step-name {
+    -unity-text-align: middle-center;
+    color: rgb(100, 200, 255);
+    font-size: 13px;
+    -unity-font-style: bold;
+    margin: 2px 0;
+}
+
+/* ===== Panels (Foldouts) ===== */
+.panel {
+    margin: 2px 0;
+}
+
+.panel > Toggle {
+    margin-left: 8px;
+}
+
+/* Foldout / Toggle checkmarks white on dark background */
+.right-panel .unity-foldout__checkmark,
+.right-panel .unity-toggle__checkmark {
+    -unity-background-image-tint-color: white;
+}
+
+.info-grid {
+    padding: 2px 8px;
+}
+
+.info-grid > Label {
+    color: rgb(200, 200, 200);
+    font-size: 11px;
+    margin: 1px 0;
+    white-space: normal;
+    overflow: hidden;
+}
+
+.status-applied {
+    color: rgb(100, 255, 100);
+}
+
+.status-skipped {
+    color: rgb(180, 180, 180);
+    -unity-font-style: italic;
+}
+
+.bone-map-container > Label {
+    font-size: 11px;
+    margin: 1px 8px;
+}
+
+.bone-mapped {
+    color: rgb(100, 255, 100);
+}
+
+.bone-unmapped {
+    color: rgb(255, 100, 100);
+}

@@ -121,7 +121,7 @@ namespace FbxAnimationPlayer
         /// スケルトンに存在するボーンに基づいて動的にボーンチェーンを構築する。
         /// UpperChestのようなオプションボーンを正しく処理する。
         /// </summary>
-        private static List<(HumanBodyBones parent, HumanBodyBones child)> BuildDynamicBoneChains(
+        internal static List<(HumanBodyBones parent, HumanBodyBones child)> BuildDynamicBoneChains(
             Dictionary<HumanBodyBones, Transform> skeletonBones)
         {
             var chains = new List<(HumanBodyBones parent, HumanBodyBones child)>();
@@ -234,7 +234,7 @@ namespace FbxAnimationPlayer
         /// Hipsボーンの回転を更新する。
         /// Up方向（Hips->Spine方向）とForward方向（脚の位置から計算）を使用する。
         /// </summary>
-        private static void ApplyTPoseToHips(Dictionary<HumanBodyBones, Transform> skeletonBones)
+        internal static void ApplyTPoseToHips(Dictionary<HumanBodyBones, Transform> skeletonBones)
         {
             if (!skeletonBones.TryGetValue(HumanBodyBones.Hips, out var hips))
             {
@@ -284,7 +284,7 @@ namespace FbxAnimationPlayer
             hips.rotation = correction * hips.rotation;
         }
 
-        private static void ApplyTPoseToChain(Dictionary<HumanBodyBones, Transform> skeletonBones,
+        internal static void ApplyTPoseToChain(Dictionary<HumanBodyBones, Transform> skeletonBones,
             HumanBodyBones parentBone, HumanBodyBones childBone)
         {
             // ----------------------------------------------------------------
@@ -348,7 +348,7 @@ namespace FbxAnimationPlayer
             parent.rotation = correction * parent.rotation;
         }
 
-        private static Quaternion SafeFromToRotation(Vector3 from, Vector3 to, Vector3 fallbackAxis)
+        internal static Quaternion SafeFromToRotation(Vector3 from, Vector3 to, Vector3 fallbackAxis)
         {
             var dot = Vector3.Dot(from.normalized, to.normalized);
 
@@ -366,7 +366,7 @@ namespace FbxAnimationPlayer
             }
         }
 
-        private static Vector3 GetFallbackAxis(HumanBodyBones bone)
+        internal static Vector3 GetFallbackAxis(HumanBodyBones bone)
         {
             var boneName = bone.ToString();
 
@@ -396,7 +396,7 @@ namespace FbxAnimationPlayer
         /// スケルトンが地面（Y=0）に立つようにHipsの高さを調整する。
         /// FootまたはToesの最も低い点がY=0になる。
         /// </summary>
-        private static void AdjustHipsHeightToStandOnGround(Dictionary<HumanBodyBones, Transform> skeletonBones)
+        internal static void AdjustHipsHeightToStandOnGround(Dictionary<HumanBodyBones, Transform> skeletonBones)
         {
             if (!skeletonBones.TryGetValue(HumanBodyBones.Hips, out var hips))
             {
@@ -413,7 +413,7 @@ namespace FbxAnimationPlayer
         /// <br/>
         /// 足の最も低いY位置を取得する（Toes優先、Footはフォールバック）。
         /// </summary>
-        private static float GetLowestFootPosition(Dictionary<HumanBodyBones, Transform> skeletonBones)
+        internal static float GetLowestFootPosition(Dictionary<HumanBodyBones, Transform> skeletonBones)
         {
             var lowestY = float.MaxValue;
 
@@ -450,7 +450,7 @@ namespace FbxAnimationPlayer
         /// 各ボーンチェーンの期待される方向（ワールド座標系）。
         /// 親ボーンから子ボーンへの方向を定義する。
         /// </summary>
-        private static readonly Dictionary<HumanBodyBones, Vector3> ExpectedDirections = new()
+        internal static readonly Dictionary<HumanBodyBones, Vector3> ExpectedDirections = new()
         {
             // Body trunk: Up direction
             { HumanBodyBones.Spine, Vector3.up },

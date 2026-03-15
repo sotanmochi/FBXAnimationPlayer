@@ -125,7 +125,7 @@ namespace FbxAnimationPlayer
             return false;
         }
 
-        private static async UniTask<FBXImporter.Importer.ImportResult> ImportFbxAsync(
+        internal static async UniTask<FBXImporter.Importer.ImportResult> ImportFbxAsync(
             Stream stream, CancellationToken cancellationToken, IProgress<float> progress = null)
         {
             var importResult = new FBXImporter.Importer.ImportResult();
@@ -159,7 +159,7 @@ namespace FbxAnimationPlayer
             return importResult;
         }
 
-        private static async UniTask<FBXImporter.Importer.ImportResult> ImportFbxAsync(
+        internal static async UniTask<FBXImporter.Importer.ImportResult> ImportFbxAsync(
             string filePath, CancellationToken cancellationToken, IProgress<float> progress = null)
         {
             var importResult = new FBXImporter.Importer.ImportResult();
@@ -274,7 +274,7 @@ namespace FbxAnimationPlayer
             };
         }
 
-        private static void RemoveLegacyAnimationComponent(GameObject gameObject)
+        internal static void RemoveLegacyAnimationComponent(GameObject gameObject)
         {
             if (gameObject.TryGetComponent<Animation>(out var legacyAnimation))
             {
@@ -282,7 +282,7 @@ namespace FbxAnimationPlayer
             }
         }
 
-        private static void RemoveCamerasAndLights(GameObject root)
+        internal static void RemoveCamerasAndLights(GameObject root)
         {
             var cameras = root.GetComponentsInChildren<Camera>(true);
             foreach (var camera in cameras)
@@ -332,7 +332,7 @@ namespace FbxAnimationPlayer
             return skeleton;
         }
 
-        private static void ResolveBoneNameMappingConfig(
+        internal static void ResolveBoneNameMappingConfig(
             BoneNameMappingConfig config,
             out string[] prefixesToStrip,
             out List<(HumanBodyBones bone, string[] namePatterns)> boneNamePatterns)
@@ -376,7 +376,7 @@ namespace FbxAnimationPlayer
             }
         }
 
-        private static void CloneSkeletonHierarchy(
+        internal static void CloneSkeletonHierarchy(
             Transform originalHips,
             Dictionary<HumanBodyBones, Transform> originalBoneMap,
             Transform clonedSkeletonRoot,
@@ -398,7 +398,7 @@ namespace FbxAnimationPlayer
             }
         }
 
-        private static void CloneRecursive(
+        internal static void CloneRecursive(
             Transform original,
             Transform clonedParent,
             Dictionary<Transform, Transform> originalToClone)
